@@ -6,11 +6,13 @@ import { useTasks } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
 import { Task } from "@/types/task";
 import { Filters } from "@/components/Filters";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 
 export default function HomePage() {
   const {
     tasks,
     moveTask,
+    reorderTasks,
     updateTask,
     addTask,
     deleteTask,
@@ -46,6 +48,32 @@ export default function HomePage() {
     );
   }, [tasks]);
 
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    if (source.droppableId === destination.droppableId) {
+      reorderTasks(
+        source.droppableId as Task["status"],
+        source.index,
+        destination.index
+      );
+    } else {
+      moveTask(
+        draggableId,
+        destination.droppableId as Task["status"],
+        destination.index
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -64,26 +92,21 @@ export default function HomePage() {
         onChange={(newFilters) => setFilters(newFilters)}
       />
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <BoardColumn
-          title="Scheduled"
-          tasks={scheduled}
-          onMoveTask={moveTask}
-          onOpenModal={openEditModal}
-        />
-        <BoardColumn
-          title="In Progress"
-          tasks={inProgress}
-          onMoveTask={moveTask}
-          onOpenModal={openEditModal}
-        />
-        <BoardColumn
-          title="Done"
-          tasks={done}
-          onMoveTask={moveTask}
-          onOpenModal={openEditModal}
-        />
-      </div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="flex flex-col md:flex-row gap-6">
+          <BoardColumn
+            status="scheduled"
+            tasks={scheduled}
+            onOpenModal={openEditModal}
+          />
+          <BoardColumn
+            status="in-progress"
+            tasks={inProgress}
+            onOpenModal={openEditModal}
+          />
+          <BoardColumn status="done" tasks={done} onOpenModal={openEditModal} />
+        </div>
+      </DragDropContext>
 
       {isModalOpen && (
         <TaskModal

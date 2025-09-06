@@ -20,25 +20,54 @@ export function useTasks() {
   });
 
   const addTask = useCallback(
-    (task: Task) => setTasks([...tasks, task]),
-    [tasks, setTasks]
+    (task: Task) => setTasks((prev) => [...prev, task]),
+    [setTasks]
   );
 
   const updateTask = useCallback(
     (updatedTask: Task) =>
-      setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))),
-    [tasks, setTasks]
+      setTasks((prev) =>
+        prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+      ),
+    [setTasks]
   );
 
   const deleteTask = useCallback(
-    (id: string) => setTasks(tasks.filter((t) => t.id !== id)),
-    [tasks, setTasks]
+    (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id)),
+    [setTasks]
+  );
+
+  const reorderTasks = useCallback(
+    (status: Task["status"], fromIndex: number, toIndex: number) => {
+      setTasks((prev) => {
+        const columnTasks = prev.filter((t) => t.status === status);
+        const [moved] = columnTasks.splice(fromIndex, 1);
+        columnTasks.splice(toIndex, 0, moved);
+
+        const otherTasks = prev.filter((t) => t.status !== status);
+        return [...otherTasks, ...columnTasks];
+      });
+    },
+    [setTasks]
   );
 
   const moveTask = useCallback(
-    (id: string, status: Task["status"]) =>
-      setTasks(tasks.map((t) => (t.id === id ? { ...t, status } : t))),
-    [tasks, setTasks]
+    (taskId: string, newStatus: Task["status"], newIndex: number) => {
+      setTasks((prev) => {
+        const task = prev.find((t) => t.id === taskId);
+        if (!task) return prev;
+
+        const withoutTask = prev.filter((t) => t.id !== taskId);
+        const destTasks = withoutTask.filter((t) => t.status === newStatus);
+        const otherTasks = withoutTask.filter((t) => t.status !== newStatus);
+
+        const updatedTask = { ...task, status: newStatus };
+        destTasks.splice(newIndex, 0, updatedTask);
+
+        return [...otherTasks, ...destTasks];
+      });
+    },
+    [setTasks]
   );
 
   const filteredTasks = useMemo(() => {
@@ -67,6 +96,7 @@ export function useTasks() {
     addTask,
     updateTask,
     deleteTask,
+    reorderTasks,
     moveTask,
     filters,
     setFilters,
