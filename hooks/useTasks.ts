@@ -15,15 +15,14 @@ export interface TaskFilters {
   tag: string;
 }
 
-export function useTasks() {
+export function useTasks(storageKey: string = "tasks") {
   const { addToast } = useToast();
 
-  const [tasks, setTasks] = useLocalStorageTasks("tasks", sampleTasks);
-  const [filters, setFilters] = useLocalStorageFilters("filters", {
-    text: "",
-    assignee: "",
-    tag: "",
-  });
+  const [tasks, setTasks] = useLocalStorageTasks(storageKey, sampleTasks);
+  const [filters, setFilters] = useLocalStorageFilters(
+    `${storageKey}-filters`,
+    { text: "", assignee: "", tag: "" }
+  );
 
   const addTask = useCallback(
     (task: Task) => {

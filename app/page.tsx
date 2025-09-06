@@ -18,7 +18,7 @@ export default function HomePage() {
     deleteTask,
     filters,
     setFilters,
-  } = useTasks();
+  } = useTasks("kanbanTasks");
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
