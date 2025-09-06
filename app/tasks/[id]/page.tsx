@@ -32,17 +32,22 @@ export default function TaskDetailPage() {
     };
   }, [tasks, params.id]);
 
-  const [title, setTitle] = useState(task?.title || "");
-  const [description, setDescription] = useState(task?.description || "");
-  const [status, setStatus] = useState<Task["status"]>(
-    task?.status || "scheduled"
-  );
-  const [assignee, setAssignee] = useState(task?.assignee || "");
-  const [tags, setTags] = useState<string[]>(task?.tags || []);
-
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<Task["status"]>("scheduled");
+  const [assignee, setAssignee] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [createdAtStr, setCreatedAtStr] = useState("");
+
   useEffect(() => {
-    if (task) setCreatedAtStr(new Date(task.createdAt).toLocaleString());
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setStatus(task.status);
+      setAssignee(task.assignee);
+      setTags(task.tags);
+      setCreatedAtStr(new Date(task.createdAt).toLocaleString());
+    }
   }, [task]);
 
   if (!task) {
@@ -83,7 +88,7 @@ export default function TaskDetailPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-6">
+    <div className="min-h-screen w-full bg-gray-50 p-4 md:p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold text-black">Task Details</h1>
         <div className="flex gap-2 flex-wrap">
@@ -108,7 +113,7 @@ export default function TaskDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-6xl mx-auto">
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-md w-full max-w-5xl mx-auto">
         <div className="mb-4">
           <label className="block font-semibold text-black mb-1">Title</label>
           <input
@@ -131,7 +136,7 @@ export default function TaskDetailPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
           <div>
             <label className="block font-semibold text-black mb-1">
               Status
@@ -148,9 +153,9 @@ export default function TaskDetailPage() {
           </div>
 
           <div>
-            <span className="block font-semibold text-black mb-1">
-              Assigned to:
-            </span>
+            <label className="block font-semibold text-black mb-1">
+              Assignee
+            </label>
             <select
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
