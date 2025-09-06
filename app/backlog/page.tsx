@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
+import Link from "next/link";
 import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
@@ -47,11 +48,12 @@ export default function BacklogPage() {
           <p className="text-gray-500">No tasks match the current filters.</p>
         ) : (
           tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onOpenModal={(task, mode) => openModal(task, mode)}
-            />
+            <Link key={task.id} href={`/tasks/${task.id}`} className="block">
+              <TaskCard
+                task={task}
+                onOpenModal={(task, mode) => openModal(task, mode)}
+              />
+            </Link>
           ))
         )}
       </div>
