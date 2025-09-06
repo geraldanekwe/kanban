@@ -39,11 +39,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             onClick={handleClick}
             onMouseDown={() => setIsDragging(false)}
             onMouseMove={() => setIsDragging(true)}
-            className={`bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition relative cursor-pointer ${
+            className={`bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition relative cursor-pointer mb-4 border border-[#cbcbcb] ${
               snapshot.isDragging ? "ring-2 ring-blue-400" : ""
             }`}
           >
-            <div className="absolute top-2 right-2 flex gap-2">
+            <div className="absolute top-2 right-2 flex gap-2 mb-4">
               <button
                 onClick={(e) => onOpenModal?.(task, "edit", e)}
                 className="text-gray-400 hover:text-purple-600 transition"
@@ -61,7 +61,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </button>
             </div>
 
-            <h3 className="font-semibold text-lg text-gray-800">
+            <h3 className="font-semibold text-lg text-gray-800 pt-2">
               {task.title}
             </h3>
             <p className="text-gray-600 text-sm mt-1">{task.description}</p>
