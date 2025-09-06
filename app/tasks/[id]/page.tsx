@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
 import { Task } from "@/types/task";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function TaskDetailPage() {
   const { tasks, updateTask, deleteTask } = useTasks();
@@ -100,14 +101,8 @@ export default function TaskDetailPage() {
         <h1 className="text-3xl font-bold text-black">Task Details</h1>
         <div className="flex gap-2 flex-wrap">
           <button
-            onClick={handleDelete}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-          >
-            Delete
-          </button>
-          <button
             onClick={handleSave}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
           >
             Save
           </button>
@@ -202,6 +197,16 @@ export default function TaskDetailPage() {
             Created At
           </label>
           <p className="text-gray-700">{createdAtStr}</p>
+        </div>
+
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={handleDelete}
+            className="flex items-center gap-2 text-red-600 hover:text-red-700 transition font-semibold"
+          >
+            <TrashIcon className="h-5 w-5" />
+            Delete
+          </button>
         </div>
       </div>
     </div>
