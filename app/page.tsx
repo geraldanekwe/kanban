@@ -80,7 +80,7 @@ export default function HomePage() {
           onClose={() => setIsModalOpen(false)}
           onAddTask={addTask}
           onUpdateTask={updateTask}
-          onDeleteTask={deleteTask}
+          onDeleteTask={(task: Task) => deleteTask(task.id)}
           selectedTask={selectedTask}
           mode={modalMode}
         />
