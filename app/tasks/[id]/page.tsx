@@ -112,6 +112,13 @@ export default function TaskDetailPage() {
         <h1 className="text-3xl font-bold text-black">Task Details</h1>
         <div className="flex gap-2 flex-wrap">
           <button
+            onClick={() => router.push("/backlog")}
+            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
+          >
+            Cancel
+          </button>
+
+          <button
             onClick={handleSave}
             className={`px-4 py-2 rounded transition ${
               hasChanges
@@ -121,13 +128,6 @@ export default function TaskDetailPage() {
             disabled={!hasChanges}
           >
             Save
-          </button>
-
-          <button
-            onClick={() => router.push("/backlog")}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
-          >
-            Cancel
           </button>
         </div>
       </div>

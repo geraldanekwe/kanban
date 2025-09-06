@@ -11,6 +11,7 @@ interface TaskModalProps {
   onDeleteTask?: (task: Task) => void;
   selectedTask?: Task | null;
   mode: "add" | "edit" | "delete";
+  allTags: string[];
 }
 
 const TaskModalComponent: React.FC<TaskModalProps> = ({
@@ -21,29 +22,49 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
   onDeleteTask,
   selectedTask,
   mode,
+  allTags,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [newTagInput, setNewTagInput] = useState("");
 
   useEffect(() => {
     if (selectedTask) {
       setTitle(selectedTask.title);
       setDescription(selectedTask.description);
       setAssignee(selectedTask.assignee);
-      setTags(selectedTask.tags.join(", "));
+      setTags(selectedTask.tags);
+      setAvailableTags(allTags.filter((t) => !selectedTask.tags.includes(t)));
     } else {
       setTitle("");
       setDescription("");
       setAssignee("");
-      setTags("");
+      setTags([]);
+      setAvailableTags(allTags);
     }
-  }, [selectedTask]);
+    setNewTagInput("");
+  }, [selectedTask, allTags]);
 
-  const parsedTags = useMemo(
-    () => tags.split(",").map((t) => t.trim()),
+  const addTag = useCallback(
+    (tag: string) => {
+      if (!tag.trim()) return;
+      if (!tags.includes(tag)) setTags([...tags, tag]);
+      setAvailableTags((prev) => prev.filter((t) => t !== tag));
+      setNewTagInput("");
+    },
     [tags]
+  );
+
+  const removeTag = useCallback(
+    (tag: string) => {
+      setTags((prev) => prev.filter((t) => t !== tag));
+      if (!allTags.includes(tag)) return;
+      setAvailableTags((prev) => [...prev, tag]);
+    },
+    [allTags]
   );
 
   const handleSubmit = useCallback(
@@ -62,7 +83,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
         description,
         status: selectedTask?.status || "to-do",
         assignee,
-        tags: parsedTags,
+        tags,
         createdAt: selectedTask?.createdAt || new Date().toISOString(),
       };
 
@@ -78,7 +99,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
       title,
       description,
       assignee,
-      parsedTags,
+      tags,
       selectedTask,
       mode,
       onAddTask,
@@ -88,10 +109,19 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
     ]
   );
 
+  const isUnchanged = useMemo(() => {
+    if (!selectedTask) return false;
+    return (
+      title === selectedTask.title &&
+      description === selectedTask.description &&
+      assignee === selectedTask.assignee &&
+      tags.join(",") === selectedTask.tags.join(",")
+    );
+  }, [title, description, assignee, tags, selectedTask]);
+
   if (!isOpen) return null;
 
   const isEdit = mode === "edit";
-  const isAdd = mode === "add";
 
   return (
     <div
@@ -156,32 +186,68 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 className="border p-2 rounded placeholder-gray-500 text-black"
                 required
               />
-              <input
-                type="text"
-                placeholder="Tags (comma-separated)"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                className="border p-2 rounded placeholder-gray-500 text-black"
-              />
+
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => removeTag(tag)}
+                    className="px-2 py-1 rounded bg-blue-600 text-white border border-blue-600"
+                  >
+                    {tag} ×
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Add tag"
+                  value={newTagInput}
+                  onChange={(e) => setNewTagInput(e.target.value)}
+                  className="border p-2 rounded w-full placeholder-gray-500 text-black"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addTag(newTagInput.trim());
+                    }
+                  }}
+                />
+                <select
+                  value=""
+                  onChange={(e) => addTag(e.target.value)}
+                  className="border p-2 rounded"
+                >
+                  <option value="">Select tag</option>
+                  {availableTags.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className={`px-4 py-2 rounded border text-gray-600 hover:bg-gray-100 ${
-                    mode === "delete" ? "hidden" : ""
-                  }`}
+                  className="px-4 py-2 rounded border text-gray-600 hover:bg-gray-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
+                  disabled={isEdit && isUnchanged}
                   className={`px-4 py-2 rounded text-white ${
-                    isEdit || isAdd
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-red-600 hover:bg-red-700"
+                    isEdit
+                      ? isUnchanged
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                 >
-                  {isEdit ? "Save" : isAdd ? "Add" : "Delete"}
+                  {isEdit ? "Save" : "Add"}
                 </button>
               </div>
             </form>

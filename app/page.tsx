@@ -39,6 +39,12 @@ export default function HomePage() {
     setIsModalOpen(true);
   }, []);
 
+  const allTags = useMemo(() => {
+    const tagsSet = new Set<string>();
+    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
+    return Array.from(tagsSet);
+  }, [tasks]);
+
   const { toDo, inProgress, done } = useMemo(() => {
     return tasks.reduce(
       (acc, task) => {
@@ -123,6 +129,7 @@ export default function HomePage() {
           onUpdateTask={updateTask}
           onDeleteTask={(task: Task) => deleteTask(task.id)}
           selectedTask={selectedTask}
+          allTags={allTags}
           mode={modalMode}
         />
       )}

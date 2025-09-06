@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
@@ -42,6 +42,12 @@ export default function BacklogPage() {
     if (!destination || source.index === destination.index) return;
     reorderTasks("all", source.index, destination.index);
   };
+
+  const allTags = useMemo(() => {
+    const tagsSet = new Set<string>();
+    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
+    return Array.from(tagsSet);
+  }, [tasks]);
 
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
@@ -107,6 +113,7 @@ export default function BacklogPage() {
           onUpdateTask={updateTask}
           onDeleteTask={(task: Task) => deleteTask(task.id)}
           selectedTask={selectedTask}
+          allTags={allTags}
           mode={modalMode}
         />
       )}
