@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Task } from "@/types/task";
 import { TaskCard } from "./TaskCard";
 import { Droppable } from "@hello-pangea/dnd";
@@ -14,6 +15,7 @@ const BoardColumnComponent: React.FC<BoardColumnProps> = ({
   tasks,
   onOpenModal,
 }) => {
+  const router = useRouter();
   const displayTitle = status
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -41,6 +43,7 @@ const BoardColumnComponent: React.FC<BoardColumnProps> = ({
                 task={task}
                 index={index}
                 onOpenModal={onOpenModal}
+                onClick={() => router.push(`/tasks/${task.id}`)}
               />
             ))
           )}

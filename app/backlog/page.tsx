@@ -6,11 +6,19 @@ import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
 import { Filters } from "@/components/Filters";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
 
 export default function BacklogPage() {
-  const { tasks, addTask, updateTask, deleteTask, setFilters, filters } =
-    useTasks();
+  const {
+    tasks,
+    addTask,
+    updateTask,
+    deleteTask,
+    setFilters,
+    filters,
+    reorderTasks,
+  } = useTasks();
   const router = useRouter();
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
@@ -25,6 +33,12 @@ export default function BacklogPage() {
     },
     []
   );
+
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+    if (!destination || source.index === destination.index) return;
+    reorderTasks("all", source.index, destination.index);
+  };
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -44,23 +58,39 @@ export default function BacklogPage() {
         onChange={(newFilters: TaskFilters) => setFilters(newFilters)}
       />
 
-      <div className="grid gap-4">
-        {tasks.length === 0 ? (
-          <p className="text-gray-500">No tasks match the current filters.</p>
-        ) : (
-          tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onClick={() => router.push(`/tasks/${task.id}`)}
-              onOpenModal={(task, mode, e) => {
-                e?.stopPropagation();
-                openModal(task, mode);
-              }}
-            />
-          ))
-        )}
-      </div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="backlog">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={`grid gap-4 ${
+                snapshot.isDraggingOver ? "bg-blue-50 p-2 rounded" : ""
+              }`}
+            >
+              {tasks.length === 0 ? (
+                <p className="text-gray-500">
+                  No tasks match the current filters.
+                </p>
+              ) : (
+                tasks.map((task, index) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    index={index}
+                    onClick={() => router.push(`/tasks/${task.id}`)}
+                    onOpenModal={(task, mode, e) => {
+                      e?.stopPropagation();
+                      openModal(task, mode);
+                    }}
+                  />
+                ))
+              )}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       {isModalOpen && (
         <TaskModal

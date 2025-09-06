@@ -38,14 +38,23 @@ export function useTasks() {
   );
 
   const reorderTasks = useCallback(
-    (status: Task["status"], fromIndex: number, toIndex: number) => {
+    (status: Task["status"] | "all", fromIndex: number, toIndex: number) => {
       setTasks((prev) => {
-        const columnTasks = prev.filter((t) => t.status === status);
-        const [moved] = columnTasks.splice(fromIndex, 1);
-        columnTasks.splice(toIndex, 0, moved);
+        let targetTasks: Task[];
+        let otherTasks: Task[];
 
-        const otherTasks = prev.filter((t) => t.status !== status);
-        return [...otherTasks, ...columnTasks];
+        if (status === "all") {
+          targetTasks = [...prev];
+          otherTasks = [];
+        } else {
+          targetTasks = prev.filter((t) => t.status === status);
+          otherTasks = prev.filter((t) => t.status !== status);
+        }
+
+        const [moved] = targetTasks.splice(fromIndex, 1);
+        targetTasks.splice(toIndex, 0, moved);
+
+        return [...otherTasks, ...targetTasks];
       });
     },
     [setTasks]

@@ -1,7 +1,7 @@
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useState } from "react";
 import { Task } from "@/types/task";
 import { Draggable } from "@hello-pangea/dnd";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 interface TaskCardProps {
   task: Task;
@@ -11,68 +11,80 @@ interface TaskCardProps {
     mode: "edit" | "delete",
     e?: React.MouseEvent
   ) => void;
+  onClick?: () => void;
 }
 
-const TaskCardComponent: React.FC<TaskCardProps> = ({
+export const TaskCard: React.FC<TaskCardProps> = ({
   task,
   index,
   onOpenModal,
+  onClick,
 }) => {
-  const { id, title, description, assignee, tags } = task;
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
-    <Draggable draggableId={id} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className={`bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition relative cursor-pointer ${
-            snapshot.isDragging ? "ring-2 ring-blue-400" : ""
-          }`}
-        >
-          <div className="absolute top-2 right-2 flex gap-2">
-            <button
-              onClick={(e) => onOpenModal?.(task, "edit", e)}
-              className="text-gray-400 hover:text-purple-600 transition"
-              aria-label="Edit Task"
-            >
-              <PencilSquareIcon className="h-5 w-5" />
-            </button>
+    <Draggable draggableId={task.id} index={index}>
+      {(provided, snapshot) => {
+        const handleClick = () => {
+          if (!snapshot.isDragging && !isDragging) {
+            onClick?.();
+          }
+        };
 
-            <button
-              onClick={(e) => onOpenModal?.(task, "delete", e)}
-              className="text-gray-400 hover:text-red-500 transition"
-              aria-label="Delete Task"
-            >
-              <TrashIcon className="h-5 w-5" />
-            </button>
-          </div>
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            onClick={handleClick}
+            onMouseDown={() => setIsDragging(false)}
+            onMouseMove={() => setIsDragging(true)}
+            className={`bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition relative cursor-pointer ${
+              snapshot.isDragging ? "ring-2 ring-blue-400" : ""
+            }`}
+          >
+            <div className="absolute top-2 right-2 flex gap-2">
+              <button
+                onClick={(e) => onOpenModal?.(task, "edit", e)}
+                className="text-gray-400 hover:text-purple-600 transition"
+                aria-label="Edit Task"
+              >
+                <PencilSquareIcon className="h-5 w-5" />
+              </button>
 
-          <h3 className="font-semibold text-lg text-gray-800">{title}</h3>
-          <p className="text-gray-600 text-sm mt-1">{description}</p>
+              <button
+                onClick={(e) => onOpenModal?.(task, "delete", e)}
+                className="text-gray-400 hover:text-red-500 transition"
+                aria-label="Delete Task"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </div>
 
-          <div className="flex justify-between items-center mt-3">
-            <span className="text-xs">
-              <span className="text-black">Assigned to:</span>{" "}
-              <span className="text-gray-500">{assignee}</span>
-            </span>
-            <div className="flex gap-1 flex-wrap">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs text-black bg-gray-200 rounded-full px-2 py-0.5"
-                >
-                  {tag}
-                </span>
-              ))}
+            <h3 className="font-semibold text-lg text-gray-800">
+              {task.title}
+            </h3>
+            <p className="text-gray-600 text-sm mt-1">{task.description}</p>
+
+            <div className="flex justify-between items-center mt-3">
+              <span className="text-xs">
+                <span className="text-black">Assigned to:</span>{" "}
+                <span className="text-gray-500">{task.assignee}</span>
+              </span>
+              <div className="flex gap-1 flex-wrap">
+                {task.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs text-black bg-gray-200 rounded-full px-2 py-0.5"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </Draggable>
   );
 };
-
-export const TaskCard = React.memo(TaskCardComponent);
-TaskCard.displayName = "TaskCard";
