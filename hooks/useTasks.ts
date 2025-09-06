@@ -7,6 +7,7 @@ import {
   useLocalStorageTasks,
   useLocalStorageFilters,
 } from "./useLocalStorage";
+import { useToast } from "@/components/ToastProvider";
 
 export interface TaskFilters {
   text: string;
@@ -15,8 +16,9 @@ export interface TaskFilters {
 }
 
 export function useTasks() {
-  const [tasks, setTasks] = useLocalStorageTasks("tasks", sampleTasks);
+  const { addToast } = useToast();
 
+  const [tasks, setTasks] = useLocalStorageTasks("tasks", sampleTasks);
   const [filters, setFilters] = useLocalStorageFilters("filters", {
     text: "",
     assignee: "",
@@ -24,63 +26,98 @@ export function useTasks() {
   });
 
   const addTask = useCallback(
-    (task: Task) => setTasks((prev) => [...prev, task]),
-    [setTasks]
+    (task: Task) => {
+      try {
+        setTasks((prev) => [...prev, task]);
+        addToast("Task added successfully!", "success");
+      } catch (error) {
+        console.error(error);
+        addToast("Failed to add task.", "error");
+      }
+    },
+    [setTasks, addToast]
   );
 
   const updateTask = useCallback(
-    (updatedTask: Task) =>
-      setTasks((prev) =>
-        prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
-      ),
-    [setTasks]
+    (updatedTask: Task) => {
+      try {
+        setTasks((prev) =>
+          prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+        );
+        addToast("Task updated successfully!", "success");
+      } catch (error) {
+        console.error(error);
+        addToast("Failed to update task.", "error");
+      }
+    },
+    [setTasks, addToast]
   );
 
   const deleteTask = useCallback(
-    (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id)),
-    [setTasks]
+    (id: string) => {
+      try {
+        setTasks((prev) => prev.filter((t) => t.id !== id));
+        addToast("Task deleted successfully!", "success");
+      } catch (error) {
+        console.error(error);
+        addToast("Failed to delete task.", "error");
+      }
+    },
+    [setTasks, addToast]
   );
 
   const reorderTasks = useCallback(
     (status: Task["status"] | "all", fromIndex: number, toIndex: number) => {
-      setTasks((prev) => {
-        let targetTasks: Task[];
-        let otherTasks: Task[];
+      try {
+        setTasks((prev) => {
+          let targetTasks: Task[];
+          let otherTasks: Task[];
 
-        if (status === "all") {
-          targetTasks = [...prev];
-          otherTasks = [];
-        } else {
-          targetTasks = prev.filter((t) => t.status === status);
-          otherTasks = prev.filter((t) => t.status !== status);
-        }
+          if (status === "all") {
+            targetTasks = [...prev];
+            otherTasks = [];
+          } else {
+            targetTasks = prev.filter((t) => t.status === status);
+            otherTasks = prev.filter((t) => t.status !== status);
+          }
 
-        const [moved] = targetTasks.splice(fromIndex, 1);
-        targetTasks.splice(toIndex, 0, moved);
+          const [moved] = targetTasks.splice(fromIndex, 1);
+          targetTasks.splice(toIndex, 0, moved);
 
-        return [...otherTasks, ...targetTasks];
-      });
+          return [...otherTasks, ...targetTasks];
+        });
+        addToast("Tasks reordered successfully!", "success");
+      } catch (error) {
+        console.error(error);
+        addToast("Failed to reorder tasks.", "error");
+      }
     },
-    [setTasks]
+    [setTasks, addToast]
   );
 
   const moveTask = useCallback(
     (taskId: string, newStatus: Task["status"], newIndex: number) => {
-      setTasks((prev) => {
-        const task = prev.find((t) => t.id === taskId);
-        if (!task) return prev;
+      try {
+        setTasks((prev) => {
+          const task = prev.find((t) => t.id === taskId);
+          if (!task) throw new Error("Task not found");
 
-        const withoutTask = prev.filter((t) => t.id !== taskId);
-        const destTasks = withoutTask.filter((t) => t.status === newStatus);
-        const otherTasks = withoutTask.filter((t) => t.status !== newStatus);
+          const withoutTask = prev.filter((t) => t.id !== taskId);
+          const destTasks = withoutTask.filter((t) => t.status === newStatus);
+          const otherTasks = withoutTask.filter((t) => t.status !== newStatus);
 
-        const updatedTask = { ...task, status: newStatus };
-        destTasks.splice(newIndex, 0, updatedTask);
+          const updatedTask = { ...task, status: newStatus };
+          destTasks.splice(newIndex, 0, updatedTask);
 
-        return [...otherTasks, ...destTasks];
-      });
+          return [...otherTasks, ...destTasks];
+        });
+        addToast(`Task moved to "${newStatus}"!`, "success");
+      } catch (error) {
+        console.error(error);
+        addToast("Failed to move task.", "error");
+      }
     },
-    [setTasks]
+    [setTasks, addToast]
   );
 
   const filteredTasks = useMemo(() => {

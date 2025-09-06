@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavBar } from "@/components/NavBar";
+import { ToastProvider } from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased m-0 p-0 h-full`}>
-        <NavBar />
-        <main className="pt-16">{children}</main>
+        <ToastProvider>
+          <NavBar />
+          <main className="pt-16">{children}</main>
+        </ToastProvider>
       </body>
     </html>
   );
