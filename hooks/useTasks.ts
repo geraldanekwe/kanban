@@ -1,12 +1,23 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { Task } from "@/types/task";
 import { sampleTasks } from "@/data/task";
 import { useLocalStorage } from "./useLocalStorage";
 
+export interface TaskFilters {
+  text: string;
+  assignee: string;
+  tag: string;
+}
+
 export function useTasks() {
   const [tasks, setTasks] = useLocalStorage("tasks", sampleTasks);
+  const [filters, setFilters] = useState<TaskFilters>({
+    text: "",
+    assignee: "",
+    tag: "",
+  });
 
   const addTask = useCallback(
     (task: Task) => setTasks([...tasks, task]),
@@ -30,5 +41,34 @@ export function useTasks() {
     [tasks, setTasks]
   );
 
-  return { tasks, addTask, updateTask, deleteTask, moveTask };
+  const filteredTasks = useMemo(() => {
+    const lowerText = filters.text.toLowerCase();
+    const lowerAssignee = filters.assignee.toLowerCase();
+    const lowerTag = filters.tag.toLowerCase();
+
+    return tasks.filter((t) => {
+      const matchesText =
+        !filters.text ||
+        t.title.toLowerCase().includes(lowerText) ||
+        t.description.toLowerCase().includes(lowerText);
+
+      const matchesAssignee =
+        !filters.assignee || t.assignee.toLowerCase() === lowerAssignee;
+
+      const matchesTag =
+        !filters.tag || t.tags.some((tag) => tag.toLowerCase() === lowerTag);
+
+      return matchesText && matchesAssignee && matchesTag;
+    });
+  }, [tasks, filters]);
+
+  return {
+    tasks: filteredTasks,
+    addTask,
+    updateTask,
+    deleteTask,
+    moveTask,
+    filters,
+    setFilters,
+  };
 }
