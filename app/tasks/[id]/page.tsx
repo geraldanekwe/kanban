@@ -68,6 +68,17 @@ export default function TaskDetailPage() {
     );
   }
 
+  const hasChanges = useMemo(() => {
+    if (!task) return false;
+    return (
+      title !== task.title ||
+      description !== task.description ||
+      status !== task.status ||
+      assignee !== task.assignee ||
+      tags.join(",") !== task.tags.join(",")
+    );
+  }, [title, description, status, assignee, tags, task]);
+
   const handleSave = () => {
     updateTask({
       ...task,
@@ -102,10 +113,16 @@ export default function TaskDetailPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={handleSave}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            className={`px-4 py-2 rounded transition ${
+              hasChanges
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            disabled={!hasChanges}
           >
             Save
           </button>
+
           <button
             onClick={() => router.push("/backlog")}
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
@@ -172,23 +189,46 @@ export default function TaskDetailPage() {
           </div>
 
           <div>
-            <label className="block font-semibold text-black mb-1">Tags</label>
-            <div className="flex flex-wrap gap-2">
-              {allTagsArray.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag)}
-                  className={`px-2 py-1 rounded border ${
-                    tags.includes(tag)
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-gray-100 text-gray-700 border-gray-300"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+            <label className="block font-semibold text-black mb-1">
+              Add Tag
+            </label>
+            <select
+              onChange={(e) => {
+                if (e.target.value) toggleTag(e.target.value);
+                e.target.value = "";
+              }}
+              value=""
+              className="border rounded p-2 text-gray-700 w-full sm:w-auto"
+            >
+              <option value="" disabled>
+                Select a tag
+              </option>
+              {allTagsArray
+                .filter((tag) => !tags.includes(tag))
+                .map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block font-semibold text-black mb-1">
+            Selected Tags
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                className="px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                {tag} ✕
+              </button>
+            ))}
           </div>
         </div>
 
