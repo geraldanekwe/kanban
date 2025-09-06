@@ -36,15 +36,15 @@ export default function HomePage() {
     setIsModalOpen(true);
   }, []);
 
-  const { scheduled, inProgress, done } = useMemo(() => {
+  const { toDo, inProgress, done } = useMemo(() => {
     return tasks.reduce(
       (acc, task) => {
-        if (task.status === "scheduled") acc.scheduled.push(task);
+        if (task.status === "to-do") acc.toDo.push(task);
         else if (task.status === "in-progress") acc.inProgress.push(task);
         else if (task.status === "done") acc.done.push(task);
         return acc;
       },
-      { scheduled: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
+      { toDo: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
     );
   }, [tasks]);
 
@@ -95,8 +95,8 @@ export default function HomePage() {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-col md:flex-row gap-6">
           <BoardColumn
-            status="scheduled"
-            tasks={scheduled}
+            status="to-do"
+            tasks={toDo}
             onOpenModal={openEditModal}
           />
           <BoardColumn

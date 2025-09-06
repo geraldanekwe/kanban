@@ -60,7 +60,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
         id: selectedTask?.id || Date.now().toString(),
         title,
         description,
-        status: selectedTask?.status || "scheduled",
+        status: selectedTask?.status || "to-do",
         assignee,
         tags: parsedTags,
         createdAt: selectedTask?.createdAt || new Date().toISOString(),

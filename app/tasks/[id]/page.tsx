@@ -34,7 +34,7 @@ export default function TaskDetailPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<Task["status"]>("scheduled");
+  const [status, setStatus] = useState<Task["status"]>("to-do");
   const [assignee, setAssignee] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [createdAtStr, setCreatedAtStr] = useState("");
@@ -146,7 +146,7 @@ export default function TaskDetailPage() {
               onChange={(e) => setStatus(e.target.value as Task["status"])}
               className="w-full border p-2 rounded text-gray-700"
             >
-              <option value="scheduled">Scheduled</option>
+              <option value="to-do">To Do</option>
               <option value="in-progress">In Progress</option>
               <option value="done">Done</option>
             </select>
