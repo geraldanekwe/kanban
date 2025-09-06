@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { BoardColumn } from "@/components/BoardColumn";
 import { useTasks } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
@@ -23,6 +23,9 @@ export default function HomePage() {
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const openAddModal = useCallback(() => {
     setSelectedTask(null);
@@ -73,6 +76,10 @@ export default function HomePage() {
       );
     }
   };
+
+  if (!mounted) {
+    return <div className="p-6 text-gray-500">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white p-6">

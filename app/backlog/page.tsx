@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
@@ -25,6 +25,9 @@ export default function BacklogPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const openModal = useCallback(
     (task: Task | null, mode: "add" | "edit" | "delete") => {
       setSelectedTask(task);
@@ -39,6 +42,10 @@ export default function BacklogPage() {
     if (!destination || source.index === destination.index) return;
     reorderTasks("all", source.index, destination.index);
   };
+
+  if (!mounted) {
+    return <div className="p-6 text-gray-500">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -78,11 +85,11 @@ export default function BacklogPage() {
                     key={task.id}
                     task={task}
                     index={index}
-                    onClick={() => router.push(`/tasks/${task.id}`)}
                     onOpenModal={(task, mode, e) => {
                       e?.stopPropagation();
                       openModal(task, mode);
                     }}
+                    onClick={() => router.push(`/tasks/${task.id}`)}
                   />
                 ))
               )}

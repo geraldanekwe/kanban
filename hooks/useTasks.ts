@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Task } from "@/types/task";
 import { sampleTasks } from "@/data/task";
-import { useLocalStorage } from "./useLocalStorage";
+import {
+  useLocalStorageTasks,
+  useLocalStorageFilters,
+} from "./useLocalStorage";
 
 export interface TaskFilters {
   text: string;
@@ -12,8 +15,9 @@ export interface TaskFilters {
 }
 
 export function useTasks() {
-  const [tasks, setTasks] = useLocalStorage("tasks", sampleTasks);
-  const [filters, setFilters] = useState<TaskFilters>({
+  const [tasks, setTasks] = useLocalStorageTasks("tasks", sampleTasks);
+
+  const [filters, setFilters] = useLocalStorageFilters("filters", {
     text: "",
     assignee: "",
     tag: "",
