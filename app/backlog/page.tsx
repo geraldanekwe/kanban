@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
@@ -11,6 +11,7 @@ import { Task } from "@/types/task";
 export default function BacklogPage() {
   const { tasks, addTask, updateTask, deleteTask, setFilters, filters } =
     useTasks();
+  const router = useRouter();
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -48,12 +49,15 @@ export default function BacklogPage() {
           <p className="text-gray-500">No tasks match the current filters.</p>
         ) : (
           tasks.map((task) => (
-            <Link key={task.id} href={`/tasks/${task.id}`} className="block">
-              <TaskCard
-                task={task}
-                onOpenModal={(task, mode) => openModal(task, mode)}
-              />
-            </Link>
+            <TaskCard
+              key={task.id}
+              task={task}
+              onClick={() => router.push(`/tasks/${task.id}`)}
+              onOpenModal={(task, mode, e) => {
+                e?.stopPropagation();
+                openModal(task, mode);
+              }}
+            />
           ))
         )}
       </div>
