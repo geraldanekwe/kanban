@@ -39,6 +39,9 @@ export default function TaskDetailPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [createdAtStr, setCreatedAtStr] = useState("");
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (task) {
       setTitle(task.title);
@@ -86,6 +89,10 @@ export default function TaskDetailPage() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
+
+  if (!mounted) {
+    return <div className="p-6 text-gray-500">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 md:p-6">
