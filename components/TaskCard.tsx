@@ -1,4 +1,4 @@
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import { Task } from "@/types/task";
 
@@ -17,18 +17,31 @@ const TaskCardComponent: React.FC<TaskCardProps> = ({
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow relative">
-      <button
-        onClick={() => onOpenModal?.(task, "delete")}
-        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition"
-        aria-label="Delete Task"
-      >
-        <TrashIcon className="h-5 w-5" />
-      </button>
+      <div className="absolute top-2 right-2 flex gap-2">
+        <button
+          onClick={() => onOpenModal?.(task, "edit")}
+          className="text-gray-400 hover:text-purple-600 transition"
+          aria-label="Edit Task"
+        >
+          <PencilSquareIcon className="h-5 w-5" />
+        </button>
+
+        <button
+          onClick={() => onOpenModal?.(task, "delete")}
+          className="text-gray-400 hover:text-red-500 transition"
+          aria-label="Delete Task"
+        >
+          <TrashIcon className="h-5 w-5" />
+        </button>
+      </div>
 
       <h3 className="font-semibold text-lg text-gray-800">{title}</h3>
       <p className="text-gray-600 text-sm mt-1">{description}</p>
       <div className="flex justify-between items-center mt-3">
-        <span className="text-xs text-gray-500">{assignee}</span>
+        <span className="text-xs">
+          <span className="text-black">Assigned to:</span>{" "}
+          <span className="text-gray-500">{assignee}</span>
+        </span>
         <div className="flex gap-1 flex-wrap">
           {tags.map((tag) => (
             <span
@@ -72,15 +85,6 @@ const TaskCardComponent: React.FC<TaskCardProps> = ({
               </button>
             )}
           </>
-        )}
-
-        {onOpenModal && (
-          <button
-            className="text-sm text-purple-600 hover:underline cursor-pointer"
-            onClick={() => onOpenModal(task, "edit")}
-          >
-            Edit
-          </button>
         )}
       </div>
     </div>
