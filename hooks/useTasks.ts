@@ -92,7 +92,9 @@ export function useTasks() {
       const matchesText =
         !filters.text ||
         t.title.toLowerCase().includes(lowerText) ||
-        t.description.toLowerCase().includes(lowerText);
+        t.description.toLowerCase().includes(lowerText) ||
+        t.assignee.toLowerCase().includes(lowerText) ||
+        t.tags.some((tag) => tag.toLowerCase().includes(lowerText));
 
       const matchesAssignee =
         !filters.assignee || t.assignee.toLowerCase() === lowerAssignee;
@@ -102,7 +104,7 @@ export function useTasks() {
 
       return matchesText && matchesAssignee && matchesTag;
     });
-  }, [tasks, filters]);
+  }, [tasks, filters.text, filters.assignee, filters.tag]);
 
   return {
     tasks: filteredTasks,
