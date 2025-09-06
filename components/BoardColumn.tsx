@@ -6,12 +6,14 @@ interface BoardColumnProps {
   title: string;
   tasks: Task[];
   onMoveTask?: (taskId: string, newStatus: Task["status"]) => void;
+  onEditTask?: (task: Task) => void;
 }
 
 export const BoardColumn: React.FC<BoardColumnProps> = ({
   title,
   tasks,
   onMoveTask,
+  onEditTask,
 }) => {
   return (
     <div className="flex-1 p-4 rounded shadow min-h-[300px] bg-gray-100">
@@ -20,7 +22,12 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({
         <p className="text-gray-400 text-sm">No tasks here</p>
       ) : (
         tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onMove={onMoveTask} />
+          <TaskCard
+            key={task.id}
+            task={task}
+            onMove={onMoveTask}
+            onEdit={onEditTask}
+          />
         ))
       )}
     </div>

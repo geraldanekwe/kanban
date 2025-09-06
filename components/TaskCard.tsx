@@ -4,9 +4,10 @@ import { Task } from "@/types/task";
 interface TaskCardProps {
   task: Task;
   onMove?: (taskId: string, newStatus: Task["status"]) => void;
+  onEdit?: (task: Task) => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onEdit }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow">
       <h3 className="font-semibold text-lg text-gray-800">{task.title}</h3>
@@ -25,34 +26,45 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove }) => {
         </div>
       </div>
 
-      {onMove && (
-        <div className="flex justify-between mt-3 flex-wrap gap-2">
-          {task.status !== "scheduled" && (
-            <button
-              className="text-sm text-blue-600 hover:underline"
-              onClick={() => onMove(task.id, "scheduled")}
-            >
-              Move to Scheduled
-            </button>
-          )}
-          {task.status !== "in-progress" && (
-            <button
-              className="text-sm text-yellow-600 hover:underline"
-              onClick={() => onMove(task.id, "in-progress")}
-            >
-              Move to In Progress
-            </button>
-          )}
-          {task.status !== "done" && (
-            <button
-              className="text-sm text-green-600 hover:underline"
-              onClick={() => onMove(task.id, "done")}
-            >
-              Move to Done
-            </button>
-          )}
-        </div>
-      )}
+      <div className="flex justify-between mt-3 flex-wrap gap-2">
+        {onMove && (
+          <>
+            {task.status !== "scheduled" && (
+              <button
+                className="text-sm text-blue-600 hover:underline"
+                onClick={() => onMove(task.id, "scheduled")}
+              >
+                Move to Scheduled
+              </button>
+            )}
+            {task.status !== "in-progress" && (
+              <button
+                className="text-sm text-yellow-600 hover:underline"
+                onClick={() => onMove(task.id, "in-progress")}
+              >
+                Move to In Progress
+              </button>
+            )}
+            {task.status !== "done" && (
+              <button
+                className="text-sm text-green-600 hover:underline"
+                onClick={() => onMove(task.id, "done")}
+              >
+                Move to Done
+              </button>
+            )}
+          </>
+        )}
+
+        {onEdit && (
+          <button
+            className="text-sm text-purple-600 hover:underline"
+            onClick={() => onEdit(task)}
+          >
+            Edit
+          </button>
+        )}
+      </div>
     </div>
   );
 };
