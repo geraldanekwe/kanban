@@ -1,21 +1,36 @@
+import { TrashIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import { Task } from "@/types/task";
 
 interface TaskCardProps {
   task: Task;
   onMove?: (taskId: string, newStatus: Task["status"]) => void;
-  onEdit?: (task: Task) => void;
+  onOpenModal?: (task: Task, mode: "edit" | "delete") => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onEdit }) => {
+const TaskCardComponent: React.FC<TaskCardProps> = ({
+  task,
+  onMove,
+  onOpenModal,
+}) => {
+  const { id, title, description, status, assignee, tags } = task;
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow">
-      <h3 className="font-semibold text-lg text-gray-800">{task.title}</h3>
-      <p className="text-gray-600 text-sm mt-1">{task.description}</p>
+    <div className="bg-white p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow relative">
+      <button
+        onClick={() => onOpenModal?.(task, "delete")}
+        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition"
+        aria-label="Delete Task"
+      >
+        <TrashIcon className="h-5 w-5" />
+      </button>
+
+      <h3 className="font-semibold text-lg text-gray-800">{title}</h3>
+      <p className="text-gray-600 text-sm mt-1">{description}</p>
       <div className="flex justify-between items-center mt-3">
-        <span className="text-xs text-gray-500">{task.assignee}</span>
+        <span className="text-xs text-gray-500">{assignee}</span>
         <div className="flex gap-1 flex-wrap">
-          {task.tags.map((tag) => (
+          {tags.map((tag) => (
             <span
               key={tag}
               className="text-xs text-black bg-gray-200 rounded-full px-2 py-0.5"
@@ -29,26 +44,29 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onEdit }) => {
       <div className="flex justify-between mt-3 flex-wrap gap-2">
         {onMove && (
           <>
-            {task.status !== "scheduled" && (
+            {status !== "scheduled" && (
               <button
-                className="text-sm text-blue-600 hover:underline"
-                onClick={() => onMove(task.id, "scheduled")}
+                className="text-sm text-blue-600 hover:underline cursor-pointer"
+                onClick={() => onMove(id, "scheduled")}
+                aria-label="Move to Scheduled"
               >
                 Move to Scheduled
               </button>
             )}
-            {task.status !== "in-progress" && (
+            {status !== "in-progress" && (
               <button
-                className="text-sm text-yellow-600 hover:underline"
-                onClick={() => onMove(task.id, "in-progress")}
+                className="text-sm text-yellow-600 hover:underline cursor-pointer"
+                onClick={() => onMove(id, "in-progress")}
+                aria-label="Move to In Progress"
               >
                 Move to In Progress
               </button>
             )}
-            {task.status !== "done" && (
+            {status !== "done" && (
               <button
-                className="text-sm text-green-600 hover:underline"
-                onClick={() => onMove(task.id, "done")}
+                className="text-sm text-green-600 hover:underline cursor-pointer"
+                onClick={() => onMove(id, "done")}
+                aria-label="Move to Done"
               >
                 Move to Done
               </button>
@@ -56,10 +74,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onEdit }) => {
           </>
         )}
 
-        {onEdit && (
+        {onOpenModal && (
           <button
-            className="text-sm text-purple-600 hover:underline"
-            onClick={() => onEdit(task)}
+            className="text-sm text-purple-600 hover:underline cursor-pointer"
+            onClick={() => onOpenModal(task, "edit")}
           >
             Edit
           </button>
@@ -68,3 +86,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onEdit }) => {
     </div>
   );
 };
+
+export const TaskCard = React.memo(TaskCardComponent);
+TaskCard.displayName = "TaskCard";
