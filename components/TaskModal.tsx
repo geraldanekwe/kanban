@@ -151,7 +151,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
             <div className="flex justify-end gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300"
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
@@ -247,7 +247,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded border text-gray-600 hover:bg-gray-100"
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
                 >
                   Cancel
                 </button>

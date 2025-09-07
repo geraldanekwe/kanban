@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Task } from "@/types/task";
 import { Draggable } from "@hello-pangea/dnd";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";

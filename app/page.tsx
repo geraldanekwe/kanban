@@ -1,13 +1,10 @@
 "use client";
-
-import React, { useState, useMemo, useCallback, useEffect } from "react";
-import { BoardColumn } from "@/components/BoardColumn";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTasks } from "@/hooks/useTasks";
-import { TaskModal } from "@/components/TaskModal";
-import { Task } from "@/types/task";
 import { Filters } from "@/components/Filters";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
+import { KanbanBoard } from "@/components/KanbanBoard";
+import { TaskModal } from "@/components/TaskModal";
+import { useTaskActions } from "@/hooks/useTaskActions";
 
 export default function HomePage() {
   const {
@@ -21,24 +18,8 @@ export default function HomePage() {
     setFilters,
   } = useTasks();
 
-  const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
-  const openAddModal = useCallback(() => {
-    setSelectedTask(null);
-    setModalMode("add");
-    setIsModalOpen(true);
-  }, []);
-
-  const openEditModal = useCallback((task: Task, mode: "edit" | "delete") => {
-    setSelectedTask(task);
-    setModalMode(mode);
-    setIsModalOpen(true);
-  }, []);
 
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
@@ -46,44 +27,12 @@ export default function HomePage() {
     return Array.from(tagsSet);
   }, [tasks]);
 
-  const { scheduled, inProgress, done } = useMemo(() => {
-    return tasks.reduce(
-      (acc, task) => {
-        if (task.status === TASK_STATUS.SCHEDULED) acc.scheduled.push(task);
-        else if (task.status === TASK_STATUS.IN_PROGRESS)
-          acc.inProgress.push(task);
-        else if (task.status === TASK_STATUS.DONE) acc.done.push(task);
-        return acc;
-      },
-      { scheduled: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
-    );
-  }, [tasks]);
-
-  const onDragEnd = (result: DropResult) => {
-    const { source, destination, draggableId } = result;
-    if (!destination) return;
-
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      return;
-    }
-
-    if (source.droppableId === destination.droppableId) {
-      reorderTasks(
-        source.droppableId as TaskStatus,
-        source.index,
-        destination.index
-      );
-    } else {
-      moveTask(
-        draggableId,
-        destination.droppableId as TaskStatus,
-        destination.index
-      );
-    }
-  };
+  const { openAddModal, openEditModal, modalProps } = useTaskActions({
+    onAddTask: addTask,
+    onUpdateTask: updateTask,
+    onDeleteTask: deleteTask,
+    allTags,
+  });
 
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
@@ -101,44 +50,16 @@ export default function HomePage() {
         </button>
       </div>
 
-      <Filters
+      <Filters tasks={tasks} value={filters} onChange={setFilters} />
+
+      <KanbanBoard
         tasks={tasks}
-        value={filters}
-        onChange={(newFilters) => setFilters(newFilters)}
+        onMoveTask={moveTask}
+        onReorderTasks={reorderTasks}
+        onOpenEditModal={openEditModal}
       />
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex flex-col md:flex-row gap-6">
-          <BoardColumn
-            status={TASK_STATUS.SCHEDULED}
-            tasks={scheduled}
-            onOpenModal={openEditModal}
-          />
-          <BoardColumn
-            status={TASK_STATUS.IN_PROGRESS}
-            tasks={inProgress}
-            onOpenModal={openEditModal}
-          />
-          <BoardColumn
-            status={TASK_STATUS.DONE}
-            tasks={done}
-            onOpenModal={openEditModal}
-          />
-        </div>
-      </DragDropContext>
-
-      {isModalOpen && (
-        <TaskModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddTask={addTask}
-          onUpdateTask={updateTask}
-          onDeleteTask={(task: Task) => deleteTask(task.id)}
-          selectedTask={selectedTask}
-          allTags={allTags}
-          mode={modalMode}
-        />
-      )}
+      {modalProps.isOpen && <TaskModal {...modalProps} />}
     </div>
   );
 }
