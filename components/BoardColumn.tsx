@@ -8,6 +8,7 @@ import {
   CalendarDaysIcon,
   BoltIcon,
   CheckCircleIcon,
+  InboxIcon,
 } from "@heroicons/react/24/outline";
 
 interface BoardColumnProps {
@@ -97,7 +98,7 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({
           <div className="p-4 space-y-3">
             {tasks.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-4xl mb-2 opacity-50">📭</div>
+                <InboxIcon className="h-12 w-12 mx-auto mb-2 text-gray-400" />
                 <p className="text-gray-500 font-medium">No tasks here</p>
                 <p className="text-gray-400 text-sm">
                   Drag tasks here or create new ones
