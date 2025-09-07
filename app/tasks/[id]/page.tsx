@@ -3,13 +3,13 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
-// import { TaskModal } from "@/components/TaskModal";
-// import { useTaskActions } from "@/hooks/useTaskActions";
-// import { TrashIcon } from "@heroicons/react/24/outline";
+import { TaskModal } from "@/components/TaskModal";
+import { useTaskActions } from "@/hooks/useTaskActions";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function TaskDetailPage() {
-  const { tasks, updateTask } = useTasks();
+  const { tasks, updateTask, deleteTask } = useTasks();
 
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
@@ -74,19 +74,26 @@ export default function TaskDetailPage() {
     router.push(destination);
   }, [task, router]);
 
-  // NOTE: Deleting the Task while on the current Task page produces undesirable side effects.
-  // Needs a rethink on how to handle the behavior.
-  // const handleDelete = useCallback(() => {
-  //   openEditModal(task!, "delete");
-  // }, [task, openEditModal]);
+  const { openEditModal, modalProps } = useTaskActions({
+    onAddTask: () => {},
+    onUpdateTask: updateTask,
+    onDeleteTask: (id: string) => {
+      try {
+        deleteTask(id);
+        const destination =
+          task?.status === TASK_STATUS.BACKLOG ? "/backlog" : "/";
+        router.push(destination);
+      } catch (error) {
+        console.error("Failed to delete task:", error);
+      }
+    },
+    allTags,
+    allAssignees,
+  });
 
-  // const { openEditModal, modalProps } = useTaskActions({
-  //   onAddTask: addTask,
-  //   onUpdateTask: updateTask,
-  //   onDeleteTask: deleteTask,
-  //   allTags,
-  //   allAssignees,
-  // });
+  const handleDelete = useCallback(() => {
+    openEditModal(task!, "delete");
+  }, [task, openEditModal]);
 
   const toggleTag = useCallback((tag: string) => {
     setTags((prev) =>
@@ -111,7 +118,7 @@ export default function TaskDetailPage() {
   if (!mounted) return <div className="p-6 text-gray-500">Loading...</div>;
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 pt-20 px-6">
       <div
         className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8
         bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl"
@@ -255,8 +262,7 @@ export default function TaskDetailPage() {
           </label>
           <p className="text-gray-700">{createdAtStr}</p>
         </div>
-        {/* NOTE: Disabled delete on this page until behavior can be address */}
-        {/* <div className="flex justify-end">
+        <div className="flex justify-end">
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-600 hover:text-red-700 transition font-semibold shadow"
@@ -264,9 +270,9 @@ export default function TaskDetailPage() {
             <TrashIcon className="h-5 w-5" />
             Delete Task
           </button>
-        </div> */}
+        </div>
       </div>
-      {/* {modalProps.isOpen && <TaskModal {...modalProps} />} */}
+      {modalProps.isOpen && <TaskModal {...modalProps} />}
     </div>
   );
 }
