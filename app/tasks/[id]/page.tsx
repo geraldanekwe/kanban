@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
 import { Task } from "@/types/task";
@@ -66,6 +66,40 @@ export default function TaskDetailPage() {
     }
   }, [task]);
 
+  const handleSave = useCallback(() => {
+    updateTask({
+      ...task!,
+      title,
+      description,
+      status,
+      assignee,
+      tags,
+    });
+
+    const destination =
+      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
+    router.push(destination);
+  }, [assignee, description, router, status, tags, task, title, updateTask]);
+
+  const handleCancel = useCallback(() => {
+    const destination =
+      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
+    router.push(destination);
+  }, [task?.status, router]);
+
+  const handleDelete = useCallback(() => {
+    deleteTask(task!.id);
+    const destination =
+      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
+    router.push(destination);
+  }, [deleteTask, router, task]);
+
+  const toggleTag = useCallback((tag: string) => {
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  }, []);
+
   if (!task) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-white p-6">
@@ -80,34 +114,6 @@ export default function TaskDetailPage() {
     );
   }
 
-  const handleSave = () => {
-    updateTask({
-      ...task!,
-      title,
-      description,
-      status,
-      assignee,
-      tags,
-    });
-
-    const destination =
-      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
-    router.push(destination);
-  };
-
-  const handleDelete = () => {
-    deleteTask(task!.id);
-    const destination =
-      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
-    router.push(destination);
-  };
-
-  const toggleTag = (tag: string) => {
-    setTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
-
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
   }
@@ -118,13 +124,7 @@ export default function TaskDetailPage() {
         <h1 className="text-3xl font-bold text-black">Task Details</h1>
         <div className="flex gap-2 flex-wrap">
           <button
-            onClick={() => {
-              const destination =
-                task?.status === TASK_STATUS.BACKLOG
-                  ? `/${TASK_STATUS.BACKLOG}`
-                  : "/";
-              router.push(destination);
-            }}
+            onClick={handleCancel}
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
           >
             Cancel
