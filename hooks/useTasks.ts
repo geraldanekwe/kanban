@@ -107,7 +107,13 @@ export function useTasks(route: string = "default") {
 
           return [...otherTasks, ...destTasks];
         });
-        addToast(`Task moved to "${newStatus}"!`, "success");
+
+        const displayStatus = newStatus
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join("");
+
+        addToast(`Task moved to "${displayStatus}"!`, "success");
       } catch (error) {
         console.error(error);
         addToast("Failed to move task.", "error");
