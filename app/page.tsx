@@ -23,12 +23,10 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const allTags = useMemo(() => {
-    const tagsSet = new Set<string>();
-    rawTasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
-    return Array.from(tagsSet);
-  }, [rawTasks]);
-
+  const allTags = useMemo(
+    () => [...new Set(rawTasks.flatMap((t) => t.tags))],
+    [rawTasks]
+  );
   const allAssignees = useMemo(
     () => Array.from(new Set(rawTasks.map((t) => t.assignee))),
     [rawTasks]

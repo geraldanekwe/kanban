@@ -11,11 +11,10 @@ import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 export default function TaskDetailPage() {
   const { tasks, updateTask, deleteTask } = useTasks();
 
-  const allTags = useMemo(() => {
-    const tagsSet = new Set<string>();
-    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
-    return Array.from(tagsSet);
-  }, [tasks]);
+  const allTags = useMemo(
+    () => [...new Set(tasks.flatMap((t) => t.tags))],
+    [tasks]
+  );
 
   const allAssignees = useMemo(
     () => Array.from(new Set(tasks.map((t) => t.assignee))),

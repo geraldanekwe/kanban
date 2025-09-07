@@ -57,11 +57,10 @@ export default function BacklogPage() {
     [rawTasks]
   );
 
-  const allTags = useMemo(() => {
-    const tagsSet = new Set<string>();
-    rawTasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
-    return Array.from(tagsSet);
-  }, [rawTasks]);
+  const allTags = useMemo(
+    () => [...new Set(rawTasks.flatMap((t) => t.tags))],
+    [rawTasks]
+  );
 
   const handleDeleteTask = useCallback(
     (task: Task) => {
