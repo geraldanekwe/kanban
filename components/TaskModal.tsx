@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Task } from "@/types/task";
 import { TaskStatus, TASK_STATUS } from "@/constants/taskStatus";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 interface TaskModalProps {
   isOpen: boolean;
