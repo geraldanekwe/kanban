@@ -30,6 +30,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
   const [tags, setTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [newTagInput, setNewTagInput] = useState("");
+  const [status, setStatus] = useState<Task["status"]>("backlog");
 
   useEffect(() => {
     if (selectedTask) {
@@ -37,12 +38,14 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
       setDescription(selectedTask.description);
       setAssignee(selectedTask.assignee);
       setTags(selectedTask.tags);
+      setStatus(selectedTask.status);
       setAvailableTags(allTags.filter((t) => !selectedTask.tags.includes(t)));
     } else {
       setTitle("");
       setDescription("");
       setAssignee("");
       setTags([]);
+      setStatus("backlog");
       setAvailableTags(allTags);
     }
     setNewTagInput("");
@@ -81,7 +84,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
         id: selectedTask?.id || Date.now().toString(),
         title,
         description,
-        status: selectedTask?.status || "to-do",
+        status,
         assignee,
         tags,
         createdAt: selectedTask?.createdAt || new Date().toISOString(),
@@ -100,6 +103,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
       description,
       assignee,
       tags,
+      status,
       selectedTask,
       mode,
       onAddTask,
@@ -115,9 +119,10 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
       title === selectedTask.title &&
       description === selectedTask.description &&
       assignee === selectedTask.assignee &&
-      tags.join(",") === selectedTask.tags.join(",")
+      tags.join(",") === selectedTask.tags.join(",") &&
+      status === selectedTask.status
     );
-  }, [title, description, assignee, tags, selectedTask]);
+  }, [title, description, assignee, tags, status, selectedTask]);
 
   if (!isOpen) return null;
 
@@ -187,6 +192,15 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 required
               />
 
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as Task["status"])}
+                className="border p-2 rounded placeholder-gray-500 text-black"
+              >
+                <option value="backlog">Backlog</option>
+                <option value="to-do">To-Do</option>
+              </select>
+
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <button
@@ -217,7 +231,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 <select
                   value=""
                   onChange={(e) => addTag(e.target.value)}
-                  className="border p-2 rounded"
+                  className="border p-2 rounded placeholder-gray-500 text-black"
                 >
                   <option value="">Select tag</option>
                   {availableTags.map((t) => (

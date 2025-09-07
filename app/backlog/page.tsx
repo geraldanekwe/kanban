@@ -18,7 +18,7 @@ export default function BacklogPage() {
     setFilters,
     filters,
     reorderTasks,
-  } = useTasks("backlogTasks");
+  } = useTasks();
   const router = useRouter();
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
@@ -49,6 +49,7 @@ export default function BacklogPage() {
     return Array.from(tagsSet);
   }, [tasks]);
 
+  const backlogTasks = tasks.filter((task) => task.status === "backlog");
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
   }
@@ -81,12 +82,10 @@ export default function BacklogPage() {
                 snapshot.isDraggingOver ? "bg-blue-50 p-2 rounded" : ""
               }`}
             >
-              {tasks.length === 0 ? (
-                <p className="text-gray-500">
-                  No tasks match the current filters.
-                </p>
+              {backlogTasks.length === 0 ? (
+                <p className="text-gray-500">Hurray! Nothing in the backlog.</p>
               ) : (
-                tasks.map((task, index) => (
+                backlogTasks.map((task, index) => (
                   <TaskCard
                     key={task.id}
                     task={task}
