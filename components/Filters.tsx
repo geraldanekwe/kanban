@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface FiltersProps {
   allAssignees: string[];
@@ -22,6 +23,16 @@ export const Filters: React.FC<FiltersProps> = ({
   const [text, setText] = useState(value.text);
   const [assignee, setAssignee] = useState(value.assignee);
   const [tag, setTag] = useState(value.tag);
+
+  const hasActiveFilters = useMemo(() => {
+    return text.trim() !== "" || assignee !== "" || tag !== "";
+  }, [text, assignee, tag]);
+
+  const clearFilters = () => {
+    setText("");
+    setAssignee("");
+    setTag("");
+  };
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -45,19 +56,7 @@ export const Filters: React.FC<FiltersProps> = ({
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
               transition-all duration-200"
             />
-            <svg
-              className="absolute left-3 top-3.5 h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <MagnifyingGlassIcon className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
           </div>
         </div>
 
@@ -91,6 +90,18 @@ export const Filters: React.FC<FiltersProps> = ({
               </option>
             ))}
           </select>
+
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="px-4 py-3 text-gray-600 hover:text-gray-800 bg-gray-100/50 
+                hover:bg-gray-200/50 rounded-xl transition-all duration-200 font-medium
+                flex items-center gap-2 whitespace-nowrap"
+            >
+              <XMarkIcon className="w-4 h-4" />
+              Clear
+            </button>
+          )}
         </div>
       </div>
     </div>
