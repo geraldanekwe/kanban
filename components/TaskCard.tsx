@@ -20,15 +20,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onOpenModal,
   onClick,
 }) => {
-  const [isDragging, setIsDragging] = useState(false);
-
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => {
-        const handleClick = () => {
-          if (!snapshot.isDragging && !isDragging) {
-            onClick?.();
+        const handleClick = (e: React.MouseEvent) => {
+          if (snapshot.isDragging) {
+            e.preventDefault();
+            return;
           }
+          onClick?.();
+        };
+        const handleButtonClick = (e: React.MouseEvent, action: () => void) => {
+          e.stopPropagation();
+          if (snapshot.isDragging) {
+            e.preventDefault();
+            return;
+          }
+          action();
         };
 
         return (
@@ -37,25 +45,35 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={handleClick}
-            onMouseDown={() => setIsDragging(false)}
-            onMouseMove={() => setIsDragging(true)}
             className={`bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition relative cursor-pointer mb-4 border border-[#cbcbcb] ${
-              snapshot.isDragging ? "ring-2 ring-blue-400" : ""
+              snapshot.isDragging ? "ring-2 ring-blue-400 shadow-2xl" : ""
             }`}
+            style={{
+              ...provided.draggableProps.style,
+              transform: snapshot.isDragging
+                ? `${provided.draggableProps.style?.transform} rotate(5deg)`
+                : provided.draggableProps.style?.transform,
+            }}
           >
             <div className="absolute top-2 right-2 flex gap-2 mb-4">
               <button
-                onClick={(e) => onOpenModal?.(task, "edit", e)}
+                onClick={(e) =>
+                  handleButtonClick(e, () => onOpenModal?.(task, "edit"))
+                }
                 className="text-gray-400 hover:text-purple-600 transition"
                 aria-label="Edit Task"
+                disabled={snapshot.isDragging}
               >
                 <PencilSquareIcon className="h-5 w-5" />
               </button>
 
               <button
-                onClick={(e) => onOpenModal?.(task, "delete", e)}
+                onClick={(e) =>
+                  handleButtonClick(e, () => onOpenModal?.(task, "delete"))
+                }
                 className="text-gray-400 hover:text-red-500 transition"
                 aria-label="Delete Task"
+                disabled={snapshot.isDragging}
               >
                 <TrashIcon className="h-5 w-5" />
               </button>
