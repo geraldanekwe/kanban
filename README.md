@@ -15,7 +15,7 @@ A modern, responsive task management application built with **Next.js 15.5.2**, 
 
 ```bash
 # Clone the repository
-git clone [your-repo-url]
+git clone git@github.com:geraldanekwe/kanban.git
 cd kanban
 
 # Install dependencies
