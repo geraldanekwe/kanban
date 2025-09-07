@@ -21,7 +21,7 @@ export default function BacklogPage() {
     setFilters,
     filters,
     reorderTasks,
-  } = useTasks();
+  } = useTasks("backlog");
   const router = useRouter();
 
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");

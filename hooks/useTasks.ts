@@ -16,14 +16,18 @@ export interface TaskFilters {
   tag: string;
 }
 
-export function useTasks(storageKey: string = "tasks") {
-  const { addToast } = useToast();
+export function useTasks(route: string = "default") {
+  const storageKey = "tasks";
+  const filtersKey = `${route}-filters`;
 
   const [tasks, setTasks] = useLocalStorageTasks(storageKey, sampleTasks);
-  const [filters, setFilters] = useLocalStorageFilters(
-    `${storageKey}-filters`,
-    { text: "", assignee: "", tag: "" }
-  );
+  const [filters, setFilters] = useLocalStorageFilters(filtersKey, {
+    text: "",
+    assignee: "",
+    tag: "",
+  });
+
+  const { addToast } = useToast();
 
   const addTask = useCallback(
     (task: Task) => {

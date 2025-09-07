@@ -17,7 +17,7 @@ export default function HomePage() {
     deleteTask,
     filters,
     setFilters,
-  } = useTasks();
+  } = useTasks("kanban");
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);

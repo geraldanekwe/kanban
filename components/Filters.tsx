@@ -37,7 +37,7 @@ export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
-        <div className="flex-1 max-w-md">
+        <div className="flex-1 max-w-md w-full">
           <div className="relative">
             <input
               type="text"
@@ -65,13 +65,13 @@ export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <select
             value={assignee}
             onChange={(e) => setAssignee(e.target.value)}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white/50
-            backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500
-            focus:border-transparent transition-all duration-200 min-w-[140px]"
+            className="w-full sm:w-36 md:w-40 px-4 py-3 border border-gray-200 rounded-xl
+              text-gray-900 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2
+              focus:ring-blue-500 focus:border-transparent transition-all duration-200 truncate"
           >
             <option value="">All Assignees</option>
             {assignees.map((a) => (
@@ -84,9 +84,9 @@ export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
           <select
             value={tag}
             onChange={(e) => setTag(e.target.value)}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white/50
-            backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500
-            focus:border-transparent transition-all duration-200 min-w-[120px]"
+            className="w-full sm:w-36 md:w-40 px-4 py-3 border border-gray-200 rounded-xl
+              text-gray-900 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2
+              focus:ring-blue-500 focus:border-transparent transition-all duration-200 truncate"
           >
             <option value="">All Tags</option>
             {tags.map((t) => (
