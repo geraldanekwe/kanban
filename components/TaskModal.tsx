@@ -156,7 +156,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
             <p className="text-gray-600 mb-6">
               Are you sure you want to delete{" "}
               <span className="font-semibold text-gray-900">
-                "{selectedTask.title}"
+                {selectedTask.title}
               </span>
               ? This action cannot be undone.
             </p>

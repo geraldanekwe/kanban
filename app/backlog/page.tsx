@@ -10,6 +10,7 @@ import { Filters } from "@/components/Filters";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
 import { TASK_STATUS } from "@/constants/taskStatus";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 export default function BacklogPage() {
   const {
@@ -83,7 +84,21 @@ export default function BacklogPage() {
               }`}
             >
               {backlogTasks.length === 0 ? (
-                <p className="text-gray-500">Hurray! Nothing in the backlog.</p>
+                <div className="flex flex-col items-center justify-center py-16 px-4">
+                  <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mb-6">
+                    <CheckCircleIcon className="w-12 h-12 text-green-600" />
+                  </div>
+
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                    All caught up!
+                  </h3>
+
+                  <p className="text-gray-500 text-center max-w-md mb-8">
+                    Your backlog is empty. You&apos;ve either completed all your
+                    tasks or haven&apos;t created any yet. Add tasks to populate
+                    the backlog.
+                  </p>
+                </div>
               ) : (
                 backlogTasks.map((task, index) => (
                   <TaskCard
