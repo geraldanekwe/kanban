@@ -4,6 +4,7 @@ import { useTasks } from "@/hooks/useTasks";
 import { Filters } from "@/components/Filters";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { TaskModal } from "@/components/TaskModal";
+import { PageHeader } from "@/components/PageHeader";
 import { useTaskActions } from "@/hooks/useTaskActions";
 
 export default function HomePage() {
@@ -27,11 +28,17 @@ export default function HomePage() {
     return Array.from(tagsSet);
   }, [tasks]);
 
+  const allAssignees = useMemo(
+    () => Array.from(new Set(tasks.map((t) => t.assignee))),
+    [tasks]
+  );
+
   const { openAddModal, openEditModal, modalProps } = useTaskActions({
     onAddTask: addTask,
     onUpdateTask: updateTask,
     onDeleteTask: deleteTask,
     allTags,
+    allAssignees,
   });
 
   if (!mounted) {
@@ -41,30 +48,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 pt-20 px-6">
       <div className="max-w-7xl mx-auto">
-        <div
-          className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8
-        bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl"
-        >
-          <div>
-            <h1
-              className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600
-            bg-clip-text text-transparent mb-2"
-            >
-              Kanban Board
-            </h1>
-            <p className="text-gray-600">
-              Organize and track your tasks efficiently
-            </p>
-          </div>
-          <button
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3
-            rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200
-            shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold"
-            onClick={openAddModal}
-          >
-            + Add Task
-          </button>
-        </div>
+        <PageHeader
+          title="Kanban Board"
+          subtitle="Organize and track your tasks efficiently"
+          buttonText="+ Add Task"
+          onButtonClick={openAddModal}
+        />
 
         <div className="mb-8">
           <Filters tasks={tasks} value={filters} onChange={setFilters} />

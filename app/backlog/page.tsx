@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/TaskCard";
 import { useTasks, TaskFilters } from "@/hooks/useTasks";
 import { TaskModal } from "@/components/TaskModal";
+import { PageHeader } from "@/components/PageHeader";
 import { Filters } from "@/components/Filters";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
@@ -59,15 +60,11 @@ export default function BacklogPage() {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Backlog</h1>
-        <button
-          onClick={() => openModal(null, "add")}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Add Task
-        </button>
-      </div>
+      <PageHeader
+        title="Backlog"
+        buttonText="Add Task"
+        onButtonClick={() => openModal(null, "add")}
+      />
 
       <Filters
         tasks={tasks}
@@ -81,7 +78,7 @@ export default function BacklogPage() {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={`grid gap-4 ${
+              className={`mt-8 grid gap-4 ${
                 snapshot.isDraggingOver ? "bg-blue-50 p-2 rounded" : ""
               }`}
             >

@@ -7,6 +7,7 @@ interface UseTaskActionsProps {
   onUpdateTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
   allTags: string[];
+  allAssignees: string[];
 }
 
 export const useTaskActions = ({
@@ -14,6 +15,7 @@ export const useTaskActions = ({
   onUpdateTask,
   onDeleteTask,
   allTags,
+  allAssignees,
 }: UseTaskActionsProps) => {
   const [modalMode, setModalMode] = useState<"add" | "edit" | "delete">("add");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -37,7 +39,7 @@ export const useTaskActions = ({
 
   const handleDeleteTask = useCallback(
     (task: Task) => {
-      onDeleteTask(task.id); // Convert Task to ID here
+      onDeleteTask(task.id);
     },
     [onDeleteTask]
   );
@@ -50,6 +52,7 @@ export const useTaskActions = ({
     onDeleteTask: handleDeleteTask,
     selectedTask,
     allTags,
+    allAssignees,
     mode: modalMode,
   };
 
