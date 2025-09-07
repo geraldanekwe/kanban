@@ -67,24 +67,16 @@ export function useTasks(storageKey: string = "tasks") {
   );
 
   const reorderTasks = useCallback(
-    (status: TaskStatus | "all", fromIndex: number, toIndex: number) => {
+    (status: TaskStatus, fromIndex: number, toIndex: number) => {
       try {
         setTasks((prev) => {
-          let targetTasks: Task[];
-          let otherTasks: Task[];
+          const statusTasks = prev.filter((t) => t.status === status);
+          const otherTasks = prev.filter((t) => t.status !== status);
 
-          if (status === "all") {
-            targetTasks = [...prev];
-            otherTasks = [];
-          } else {
-            targetTasks = prev.filter((t) => t.status === status);
-            otherTasks = prev.filter((t) => t.status !== status);
-          }
+          const [moved] = statusTasks.splice(fromIndex, 1);
+          statusTasks.splice(toIndex, 0, moved);
 
-          const [moved] = targetTasks.splice(fromIndex, 1);
-          targetTasks.splice(toIndex, 0, moved);
-
-          return [...otherTasks, ...targetTasks];
+          return [...otherTasks, ...statusTasks];
         });
         addToast("Tasks reordered successfully!", "success");
       } catch (error) {

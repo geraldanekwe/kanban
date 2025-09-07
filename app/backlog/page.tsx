@@ -8,7 +8,7 @@ import { TaskModal } from "@/components/TaskModal";
 import { Filters } from "@/components/Filters";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
-import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
+import { TASK_STATUS } from "@/constants/taskStatus";
 
 export default function BacklogPage() {
   const {
@@ -41,7 +41,7 @@ export default function BacklogPage() {
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination || source.index === destination.index) return;
-    reorderTasks("all", source.index, destination.index);
+    reorderTasks(TASK_STATUS.BACKLOG, source.index, destination.index);
   };
 
   const allTags = useMemo(() => {
