@@ -67,32 +67,24 @@ export default function TaskDetailPage() {
   }, [task]);
 
   const handleSave = useCallback(() => {
-    updateTask({
-      ...task!,
-      title,
-      description,
-      status,
-      assignee,
-      tags,
-    });
-
+    updateTask({ ...task!, title, description, status, assignee, tags });
     const destination =
       task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
     router.push(destination);
-  }, [assignee, description, router, status, tags, task, title, updateTask]);
+  }, [task, title, description, status, assignee, tags, updateTask, router]);
 
   const handleCancel = useCallback(() => {
     const destination =
       task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
     router.push(destination);
-  }, [task?.status, router]);
+  }, [task, router]);
 
   const handleDelete = useCallback(() => {
     deleteTask(task!.id);
     const destination =
       task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
     router.push(destination);
-  }, [deleteTask, router, task]);
+  }, [task, deleteTask, router]);
 
   const toggleTag = useCallback((tag: string) => {
     setTags((prev) =>
@@ -105,7 +97,7 @@ export default function TaskDetailPage() {
       <div className="min-h-screen flex flex-col justify-center items-center bg-white p-6">
         <p className="text-gray-500 mb-4">Task not found.</p>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition shadow"
           onClick={() => router.push("/backlog")}
         >
           Back to Backlog
@@ -114,68 +106,78 @@ export default function TaskDetailPage() {
     );
   }
 
-  if (!mounted) {
-    return <div className="p-6 text-gray-500">Loading...</div>;
-  }
+  if (!mounted) return <div className="p-6 text-gray-500">Loading...</div>;
 
   return (
     <div className="min-h-screen w-full bg-gray-50 p-4 md:p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h1 className="text-3xl font-bold text-black">Task Details</h1>
-        <div className="flex gap-2 flex-wrap">
+      <div
+        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8
+        bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl"
+      >
+        <div>
+          <h1
+            className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600
+            bg-clip-text text-transparent mb-2"
+          >
+            Task Details
+          </h1>
+        </div>
+
+        <div className="mt-4 md:mt-0 flex gap-2 justify-end">
           <button
             onClick={handleCancel}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
+            className="px-4 py-2 rounded-xl font-semibold transition shadow bg-gray-200 text-gray-500"
           >
             Cancel
           </button>
-
           <button
             onClick={handleSave}
-            className={`px-4 py-2 rounded transition ${
+            disabled={!hasChanges}
+            className={`px-4 py-2 rounded-xl font-semibold transition shadow ${
               hasChanges
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
-            disabled={!hasChanges}
           >
-            Save
+            Save Changes
           </button>
         </div>
       </div>
 
-      <div className="bg-white p-4 md:p-6 rounded-lg shadow-md w-full max-w-5xl mx-auto">
-        <div className="mb-4">
-          <label className="block font-semibold text-black mb-1">Title</label>
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-5xl mx-auto space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Title
+          </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-2 rounded text-gray-700 placeholder-gray-400"
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block font-semibold text-black mb-1">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Description
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={5}
-            className="w-full border p-2 rounded text-gray-700 placeholder-gray-400"
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl placeholder-gray-400 text-gray-900 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div>
-            <label className="block font-semibold text-black mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Status
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as TaskStatus)}
-              className="w-full border p-2 rounded text-gray-700"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
               <option value={TASK_STATUS.BACKLOG}>Backlog</option>
               <option value={TASK_STATUS.SCHEDULED}>Scheduled</option>
@@ -185,13 +187,13 @@ export default function TaskDetailPage() {
           </div>
 
           <div>
-            <label className="block font-semibold text-black mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Assignee
             </label>
             <select
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
-              className="w-full border p-2 rounded text-gray-700"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
               {assigneesArray.map((a) => (
                 <option key={a} value={a}>
@@ -202,7 +204,7 @@ export default function TaskDetailPage() {
           </div>
 
           <div>
-            <label className="block font-semibold text-black mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Add Tag
             </label>
             <select
@@ -211,7 +213,7 @@ export default function TaskDetailPage() {
                 e.target.value = "";
               }}
               value=""
-              className="border rounded p-2 text-gray-700 w-full sm:w-auto"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
               <option value="" disabled>
                 Select a tag
@@ -227,8 +229,8 @@ export default function TaskDetailPage() {
           </div>
         </div>
 
-        <div className="mb-4">
-          <label className="block font-semibold text-black mb-1">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Selected Tags
           </label>
           <div className="flex flex-wrap gap-2">
@@ -237,7 +239,7 @@ export default function TaskDetailPage() {
                 key={tag}
                 type="button"
                 onClick={() => toggleTag(tag)}
-                className="px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+                className="px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition text-sm"
               >
                 {tag} ✕
               </button>
@@ -246,19 +248,19 @@ export default function TaskDetailPage() {
         </div>
 
         <div>
-          <label className="block font-semibold text-black mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Created At
           </label>
           <p className="text-gray-700">{createdAtStr}</p>
         </div>
 
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end">
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 text-red-600 hover:text-red-700 transition font-semibold"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-600 hover:text-red-700 transition font-semibold shadow"
           >
             <TrashIcon className="h-5 w-5" />
-            Delete
+            Delete Task
           </button>
         </div>
       </div>
