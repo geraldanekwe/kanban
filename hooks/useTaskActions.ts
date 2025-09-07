@@ -1,6 +1,8 @@
 "use client";
-import { useState, useCallback } from "react";
+
+import { useState, useCallback, useMemo } from "react";
 import { Task } from "@/types/task";
+import { TaskModalProps } from "@/types/modal";
 
 interface UseTaskActionsProps {
   onAddTask: (task: Task) => void;
@@ -44,17 +46,60 @@ export const useTaskActions = ({
     [onDeleteTask]
   );
 
-  const modalProps = {
-    isOpen: isModalOpen,
-    onClose: closeModal,
+  const modalProps: TaskModalProps = useMemo(() => {
+    const baseProps = {
+      isOpen: isModalOpen,
+      onClose: closeModal,
+    };
+
+    if (modalMode === "add") {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onAddTask,
+        allTags,
+        allAssignees,
+      };
+    }
+
+    if (modalMode === "edit" && selectedTask) {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onUpdateTask,
+        selectedTask,
+        allTags,
+        allAssignees,
+      };
+    }
+
+    if (modalMode === "delete" && selectedTask) {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onDeleteTask: handleDeleteTask,
+        selectedTask,
+      };
+    }
+
+    return {
+      ...baseProps,
+      mode: "add",
+      onAddTask,
+      allTags,
+      allAssignees,
+    };
+  }, [
+    isModalOpen,
+    closeModal,
+    modalMode,
+    selectedTask,
     onAddTask,
     onUpdateTask,
-    onDeleteTask: handleDeleteTask,
-    selectedTask,
+    handleDeleteTask,
     allTags,
     allAssignees,
-    mode: modalMode,
-  };
+  ]);
 
   return {
     openAddModal,

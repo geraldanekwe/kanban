@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Filters } from "@/components/Filters";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
+import { TaskModalProps } from "@/types/modal";
 import { TASK_STATUS } from "@/constants/taskStatus";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
@@ -41,6 +42,10 @@ export default function BacklogPage() {
     []
   );
 
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination || source.index === destination.index) return;
@@ -58,9 +63,68 @@ export default function BacklogPage() {
     return Array.from(tagsSet);
   }, [rawTasks]);
 
+  const handleDeleteTask = useCallback(
+    (task: Task) => {
+      deleteTask(task.id);
+    },
+    [deleteTask]
+  );
+
+  const modalProps: TaskModalProps | null = useMemo(() => {
+    if (!isModalOpen) return null;
+
+    const baseProps = {
+      isOpen: isModalOpen,
+      onClose: closeModal,
+    };
+
+    if (modalMode === "add") {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onAddTask: addTask,
+        allTags,
+        allAssignees,
+      };
+    }
+
+    if (modalMode === "edit" && selectedTask) {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onUpdateTask: updateTask,
+        selectedTask,
+        allTags,
+        allAssignees,
+      };
+    }
+
+    if (modalMode === "delete" && selectedTask) {
+      return {
+        ...baseProps,
+        mode: modalMode,
+        onDeleteTask: handleDeleteTask,
+        selectedTask,
+      };
+    }
+
+    return null;
+  }, [
+    isModalOpen,
+    closeModal,
+    modalMode,
+    selectedTask,
+    addTask,
+    updateTask,
+    handleDeleteTask,
+    allTags,
+    allAssignees,
+  ]);
+
   const backlogTasks = tasks.filter(
     (task) => task.status === TASK_STATUS.BACKLOG
   );
+
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
   }
@@ -126,19 +190,7 @@ export default function BacklogPage() {
         </Droppable>
       </DragDropContext>
 
-      {isModalOpen && (
-        <TaskModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddTask={addTask}
-          onUpdateTask={updateTask}
-          onDeleteTask={(task: Task) => deleteTask(task.id)}
-          selectedTask={selectedTask}
-          allAssignees={allAssignees}
-          allTags={allTags}
-          mode={modalMode}
-        />
-      )}
+      {modalProps && <TaskModal {...modalProps} />}
     </div>
   );
 }
