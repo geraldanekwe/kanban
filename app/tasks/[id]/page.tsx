@@ -3,35 +3,30 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
-import { Task } from "@/types/task";
-import { TrashIcon } from "@heroicons/react/24/outline";
+// import { TaskModal } from "@/components/TaskModal";
+// import { useTaskActions } from "@/hooks/useTaskActions";
+// import { TrashIcon } from "@heroicons/react/24/outline";
 import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function TaskDetailPage() {
-  const { tasks, updateTask, deleteTask } = useTasks();
+  const { tasks, updateTask } = useTasks();
+
+  const allTags = useMemo(() => {
+    const tagsSet = new Set<string>();
+    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
+    return Array.from(tagsSet);
+  }, [tasks]);
+
+  const allAssignees = useMemo(
+    () => Array.from(new Set(tasks.map((t) => t.assignee))),
+    [tasks]
+  );
+
   const params = useParams();
   const router = useRouter();
 
-  const { task, assigneesArray, allTagsArray } = useMemo(() => {
-    const acc = tasks.reduce(
-      (acc, t) => {
-        if (t.id === params.id) acc.task = t;
-        acc.assigneesSet.add(t.assignee);
-        t.tags.forEach((tag) => acc.tagsSet.add(tag));
-        return acc;
-      },
-      {
-        task: null as Task | null,
-        assigneesSet: new Set<string>(),
-        tagsSet: new Set<string>(),
-      }
-    );
-
-    return {
-      task: acc.task,
-      assigneesArray: Array.from(acc.assigneesSet),
-      allTagsArray: Array.from(acc.tagsSet),
-    };
+  const task = useMemo(() => {
+    return tasks.find((t) => t.id === params.id) || null;
   }, [tasks, params.id]);
 
   const [title, setTitle] = useState("");
@@ -79,12 +74,19 @@ export default function TaskDetailPage() {
     router.push(destination);
   }, [task, router]);
 
-  const handleDelete = useCallback(() => {
-    deleteTask(task!.id);
-    const destination =
-      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
-    router.push(destination);
-  }, [task, deleteTask, router]);
+  // NOTE: Deleting the Task while on the current Task page produces undesirable side effects.
+  // Needs a rethink on how to handle the behavior.
+  // const handleDelete = useCallback(() => {
+  //   openEditModal(task!, "delete");
+  // }, [task, openEditModal]);
+
+  // const { openEditModal, modalProps } = useTaskActions({
+  //   onAddTask: addTask,
+  //   onUpdateTask: updateTask,
+  //   onDeleteTask: deleteTask,
+  //   allTags,
+  //   allAssignees,
+  // });
 
   const toggleTag = useCallback((tag: string) => {
     setTags((prev) =>
@@ -195,7 +197,7 @@ export default function TaskDetailPage() {
               onChange={(e) => setAssignee(e.target.value)}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
-              {assigneesArray.map((a) => (
+              {allAssignees.map((a) => (
                 <option key={a} value={a}>
                   {a}
                 </option>
@@ -218,7 +220,7 @@ export default function TaskDetailPage() {
               <option value="" disabled>
                 Select a tag
               </option>
-              {allTagsArray
+              {allTags
                 .filter((tag) => !tags.includes(tag))
                 .map((tag) => (
                   <option key={tag} value={tag}>
@@ -253,8 +255,8 @@ export default function TaskDetailPage() {
           </label>
           <p className="text-gray-700">{createdAtStr}</p>
         </div>
-
-        <div className="flex justify-end">
+        {/* NOTE: Disabled delete on this page until behavior can be address */}
+        {/* <div className="flex justify-end">
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-600 hover:text-red-700 transition font-semibold shadow"
@@ -262,8 +264,9 @@ export default function TaskDetailPage() {
             <TrashIcon className="h-5 w-5" />
             Delete Task
           </button>
-        </div>
+        </div> */}
       </div>
+      {/* {modalProps.isOpen && <TaskModal {...modalProps} />} */}
     </div>
   );
 }
