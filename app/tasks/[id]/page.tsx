@@ -115,7 +115,13 @@ export default function TaskDetailPage() {
     );
   }
 
-  if (!mounted) return <div className="p-6 text-gray-500">Loading...</div>;
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-gray-500 text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 pt-20">
