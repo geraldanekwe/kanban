@@ -1,4 +1,5 @@
 import { Task } from "../types/task";
+import { TASK_STATUS } from "@/constants/taskStatus";
 
 export const sampleTasks: Task[] = [
   {
@@ -6,7 +7,7 @@ export const sampleTasks: Task[] = [
     title: "Design Homepage Mockup",
     description:
       "Create initial wireframes and high-fidelity mockups for the new landing page.",
-    status: "scheduled",
+    status: TASK_STATUS.SCHEDULED,
     assignee: "Alice Monroe",
     tags: ["design", "ui"],
     createdAt: new Date().toISOString(),
@@ -16,7 +17,7 @@ export const sampleTasks: Task[] = [
     title: "Implement Authentication",
     description:
       "Set up JWT-based login and registration endpoints with proper validation.",
-    status: "scheduled",
+    status: TASK_STATUS.SCHEDULED,
     assignee: "Brian Chen",
     tags: ["backend", "security"],
     createdAt: new Date().toISOString(),
@@ -26,7 +27,7 @@ export const sampleTasks: Task[] = [
     title: "Integrate Payment Gateway",
     description:
       "Connect Stripe API and test payment flows for subscription plans.",
-    status: "scheduled",
+    status: TASK_STATUS.SCHEDULED,
     assignee: "Carla Reyes",
     tags: ["backend", "payment"],
     createdAt: new Date().toISOString(),
@@ -36,7 +37,7 @@ export const sampleTasks: Task[] = [
     title: "Write Blog Post: React Tips",
     description:
       "Draft an article covering advanced React hooks and performance optimizations.",
-    status: "scheduled",
+    status: TASK_STATUS.SCHEDULED,
     assignee: "David Kim",
     tags: ["content", "react"],
     createdAt: new Date().toISOString(),
@@ -45,7 +46,7 @@ export const sampleTasks: Task[] = [
     id: "5",
     title: "Optimize Landing Page Images",
     description: "Compress and lazy-load images to improve page load speed.",
-    status: "in-progress",
+    status: TASK_STATUS.IN_PROGRESS,
     assignee: "Emma Johnson",
     tags: ["frontend", "performance"],
     createdAt: new Date().toISOString(),
@@ -55,7 +56,7 @@ export const sampleTasks: Task[] = [
     title: "Set Up CI/CD Pipeline",
     description:
       "Configure GitHub Actions to run tests and deploy to staging automatically.",
-    status: "in-progress",
+    status: TASK_STATUS.IN_PROGRESS,
     assignee: "Felix Zhang",
     tags: ["devops", "automation"],
     createdAt: new Date().toISOString(),
@@ -65,7 +66,7 @@ export const sampleTasks: Task[] = [
     title: "Create API Documentation",
     description:
       "Document all REST endpoints with Swagger and example responses.",
-    status: "in-progress",
+    status: TASK_STATUS.IN_PROGRESS,
     assignee: "Gabriela Torres",
     tags: ["documentation", "backend"],
     createdAt: new Date().toISOString(),
@@ -75,7 +76,7 @@ export const sampleTasks: Task[] = [
     title: "User Feedback Survey",
     description:
       "Design and send out a survey to gather user feedback on the beta app.",
-    status: "done",
+    status: TASK_STATUS.DONE,
     assignee: "Hector Ramirez",
     tags: ["research", "ux"],
     createdAt: new Date().toISOString(),
@@ -85,7 +86,7 @@ export const sampleTasks: Task[] = [
     title: "Fix Responsive Navbar",
     description:
       "Ensure the top navigation adapts correctly across all mobile devices.",
-    status: "done",
+    status: TASK_STATUS.DONE,
     assignee: "Isabella Lee",
     tags: ["frontend", "bugfix"],
     createdAt: new Date().toISOString(),
@@ -94,7 +95,7 @@ export const sampleTasks: Task[] = [
     id: "10",
     title: "Update Terms of Service",
     description: "Revise legal terms and include new privacy policy clauses.",
-    status: "done",
+    status: TASK_STATUS.DONE,
     assignee: "Jackie Wong",
     tags: ["legal", "compliance"],
     createdAt: new Date().toISOString(),
@@ -104,7 +105,7 @@ export const sampleTasks: Task[] = [
     title: "Prepare Investor Presentation",
     description:
       "Create slides and visuals for upcoming investor pitch meeting.",
-    status: "scheduled",
+    status: TASK_STATUS.SCHEDULED,
     assignee: "Kevin Patel",
     tags: ["presentation", "business"],
     createdAt: new Date().toISOString(),
@@ -114,7 +115,7 @@ export const sampleTasks: Task[] = [
     title: "Research Competitor Pricing",
     description:
       "Analyze competitors' subscription tiers and prepare a report.",
-    status: "in-progress",
+    status: TASK_STATUS.IN_PROGRESS,
     assignee: "Luna Garcia",
     tags: ["research", "strategy"],
     createdAt: new Date().toISOString(),
@@ -123,7 +124,7 @@ export const sampleTasks: Task[] = [
     id: "13",
     title: "Brainstorm New Features",
     description: "Collect ideas for upcoming app versions and improvements.",
-    status: "backlog",
+    status: TASK_STATUS.BACKLOG,
     assignee: "Maya Singh",
     tags: ["planning", "brainstorm"],
     createdAt: new Date().toISOString(),
@@ -132,7 +133,7 @@ export const sampleTasks: Task[] = [
     id: "14",
     title: "Research UI Trends",
     description: "Look into current design trends to inform UI decisions.",
-    status: "backlog",
+    status: TASK_STATUS.BACKLOG,
     assignee: "Noah Kim",
     tags: ["design", "research"],
     createdAt: new Date().toISOString(),
@@ -141,7 +142,7 @@ export const sampleTasks: Task[] = [
     id: "15",
     title: "Organize Team Workshop",
     description: "Plan and schedule a workshop to improve team collaboration.",
-    status: "backlog",
+    status: TASK_STATUS.BACKLOG,
     assignee: "Olivia Martinez",
     tags: ["team", "planning"],
     createdAt: new Date().toISOString(),

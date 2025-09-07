@@ -46,7 +46,7 @@ describe("HomePage", () => {
 
     expect(screen.getByText("Kanban Board")).toBeInTheDocument();
     expect(screen.getByText("Add Task")).toBeInTheDocument();
-    expect(screen.getByText("To Do")).toBeInTheDocument();
+    expect(screen.getByText("Scheduled")).toBeInTheDocument();
     expect(screen.getByText("In Progress")).toBeInTheDocument();
     expect(screen.getByText("Done")).toBeInTheDocument();
   });

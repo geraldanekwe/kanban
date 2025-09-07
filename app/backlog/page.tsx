@@ -8,6 +8,7 @@ import { TaskModal } from "@/components/TaskModal";
 import { Filters } from "@/components/Filters";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Task } from "@/types/task";
+import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function BacklogPage() {
   const {
@@ -49,7 +50,9 @@ export default function BacklogPage() {
     return Array.from(tagsSet);
   }, [tasks]);
 
-  const backlogTasks = tasks.filter((task) => task.status === "backlog");
+  const backlogTasks = tasks.filter(
+    (task) => task.status === TASK_STATUS.BACKLOG
+  );
   if (!mounted) {
     return <div className="p-6 text-gray-500">Loading...</div>;
   }
@@ -73,7 +76,7 @@ export default function BacklogPage() {
       />
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="backlog">
+        <Droppable droppableId={TASK_STATUS.BACKLOG}>
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}

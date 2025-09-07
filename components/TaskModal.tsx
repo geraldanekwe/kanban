@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Task } from "@/types/task";
+import { TaskStatus, TASK_STATUS } from "@/constants/taskStatus";
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
   const [tags, setTags] = useState<string[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [newTagInput, setNewTagInput] = useState("");
-  const [status, setStatus] = useState<Task["status"]>("backlog");
+  const [status, setStatus] = useState<TaskStatus>(TASK_STATUS.BACKLOG);
 
   useEffect(() => {
     if (selectedTask) {
@@ -45,7 +46,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
       setDescription("");
       setAssignee("");
       setTags([]);
-      setStatus("backlog");
+      setStatus(TASK_STATUS.BACKLOG);
       setAvailableTags(allTags);
     }
     setNewTagInput("");
@@ -194,11 +195,11 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
 
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value as Task["status"])}
+                onChange={(e) => setStatus(e.target.value as TaskStatus)}
                 className="border p-2 rounded placeholder-gray-500 text-black"
               >
-                <option value="backlog">Backlog</option>
-                <option value="scheduled">Scheduled</option>
+                <option value={TASK_STATUS.BACKLOG}>Backlog</option>
+                <option value={TASK_STATUS.SCHEDULED}>Scheduled</option>
               </select>
 
               <div className="flex flex-wrap gap-2">

@@ -1,4 +1,4 @@
-export type TaskStatus = "scheduled" | "in-progress" | "done" | "backlog";
+import { TaskStatus } from "@/constants/taskStatus";
 
 export interface Task {
   id: string;

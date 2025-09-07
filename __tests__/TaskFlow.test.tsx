@@ -3,6 +3,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TaskModal } from "@/components/TaskModal";
+import { TASK_STATUS } from "@/constants/taskStatus";
 import { useTasks } from "@/hooks/useTasks";
 import { mockTasks, mockTaskFunctions } from "../__mocks__/taskMocks";
 
@@ -58,7 +59,7 @@ describe("TaskFlow Tests", () => {
       expect(addedTask.title).toBe("New Task");
       expect(addedTask.description).toBe("New description");
       expect(addedTask.assignee).toBe("Bob");
-      expect(addedTask.status).toBe("backlog");
+      expect(addedTask.status).toBe(TASK_STATUS.BACKLOG);
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -132,8 +133,8 @@ describe("TaskFlow Tests", () => {
       reorderTasks: reorderTasksMock,
     });
 
-    reorderTasksMock("scheduled", 0, 1);
-    expect(reorderTasksMock).toHaveBeenCalledWith("scheduled", 0, 1);
+    reorderTasksMock(TASK_STATUS.SCHEDULED, 0, 1);
+    expect(reorderTasksMock).toHaveBeenCalledWith(TASK_STATUS.SCHEDULED, 0, 1);
   });
 
   it("calls setFilters correctly", () => {

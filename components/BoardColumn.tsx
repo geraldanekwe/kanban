@@ -3,9 +3,10 @@ import { useRouter } from "next/navigation";
 import { Task } from "@/types/task";
 import { TaskCard } from "./TaskCard";
 import { Droppable } from "@hello-pangea/dnd";
+import { TaskStatus } from "@/constants/taskStatus";
 
 interface BoardColumnProps {
-  status: Task["status"];
+  status: TaskStatus;
   tasks: Task[];
   onOpenModal?: (task: Task, mode: "edit" | "delete") => void;
 }

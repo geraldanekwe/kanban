@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { Task } from "@/types/task";
+import { TaskStatus } from "@/constants/taskStatus";
 import { sampleTasks } from "@/data/task";
 import {
   useLocalStorageTasks,
@@ -66,7 +67,7 @@ export function useTasks(storageKey: string = "tasks") {
   );
 
   const reorderTasks = useCallback(
-    (status: Task["status"] | "all", fromIndex: number, toIndex: number) => {
+    (status: TaskStatus | "all", fromIndex: number, toIndex: number) => {
       try {
         setTasks((prev) => {
           let targetTasks: Task[];
@@ -95,7 +96,7 @@ export function useTasks(storageKey: string = "tasks") {
   );
 
   const moveTask = useCallback(
-    (taskId: string, newStatus: Task["status"], newIndex: number) => {
+    (taskId: string, newStatus: TaskStatus, newIndex: number) => {
       try {
         setTasks((prev) => {
           const task = prev.find((t) => t.id === taskId);

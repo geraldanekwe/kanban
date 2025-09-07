@@ -11,7 +11,7 @@ export function NavBar() {
   const pathname = usePathname();
 
   const links = [
-    { name: "Kanban", href: "/", icon: Squares2X2Icon },
+    { name: "Kanban Board", href: "/", icon: Squares2X2Icon },
     { name: "Backlog", href: "/backlog", icon: ClipboardDocumentListIcon },
   ];
 

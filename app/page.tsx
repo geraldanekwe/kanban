@@ -7,6 +7,7 @@ import { TaskModal } from "@/components/TaskModal";
 import { Task } from "@/types/task";
 import { Filters } from "@/components/Filters";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function HomePage() {
   const {
@@ -48,9 +49,10 @@ export default function HomePage() {
   const { scheduled, inProgress, done } = useMemo(() => {
     return tasks.reduce(
       (acc, task) => {
-        if (task.status === "scheduled") acc.scheduled.push(task);
-        else if (task.status === "in-progress") acc.inProgress.push(task);
-        else if (task.status === "done") acc.done.push(task);
+        if (task.status === TASK_STATUS.SCHEDULED) acc.scheduled.push(task);
+        else if (task.status === TASK_STATUS.IN_PROGRESS)
+          acc.inProgress.push(task);
+        else if (task.status === TASK_STATUS.DONE) acc.done.push(task);
         return acc;
       },
       { scheduled: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
@@ -70,14 +72,14 @@ export default function HomePage() {
 
     if (source.droppableId === destination.droppableId) {
       reorderTasks(
-        source.droppableId as Task["status"],
+        source.droppableId as TaskStatus,
         source.index,
         destination.index
       );
     } else {
       moveTask(
         draggableId,
-        destination.droppableId as Task["status"],
+        destination.droppableId as TaskStatus,
         destination.index
       );
     }
@@ -108,16 +110,20 @@ export default function HomePage() {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-col md:flex-row gap-6">
           <BoardColumn
-            status="scheduled"
+            status={TASK_STATUS.SCHEDULED}
             tasks={scheduled}
             onOpenModal={openEditModal}
           />
           <BoardColumn
-            status="in-progress"
+            status={TASK_STATUS.IN_PROGRESS}
             tasks={inProgress}
             onOpenModal={openEditModal}
           />
-          <BoardColumn status="done" tasks={done} onOpenModal={openEditModal} />
+          <BoardColumn
+            status={TASK_STATUS.DONE}
+            tasks={done}
+            onOpenModal={openEditModal}
+          />
         </div>
       </DragDropContext>
 

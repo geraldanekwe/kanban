@@ -5,6 +5,7 @@ import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
 import { Task } from "@/types/task";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function TaskDetailPage() {
   const { tasks, updateTask, deleteTask } = useTasks();
@@ -35,7 +36,7 @@ export default function TaskDetailPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<Task["status"]>("scheduled");
+  const [status, setStatus] = useState<TaskStatus>(TASK_STATUS.BACKLOG);
   const [assignee, setAssignee] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [createdAtStr, setCreatedAtStr] = useState("");
@@ -89,13 +90,15 @@ export default function TaskDetailPage() {
       tags,
     });
 
-    const destination = task?.status === "backlog" ? "/backlog" : "/";
+    const destination =
+      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
     router.push(destination);
   };
 
   const handleDelete = () => {
     deleteTask(task!.id);
-    const destination = task?.status === "backlog" ? "/backlog" : "/";
+    const destination =
+      task?.status === TASK_STATUS.BACKLOG ? `/${TASK_STATUS.BACKLOG}` : "/";
     router.push(destination);
   };
 
@@ -116,7 +119,10 @@ export default function TaskDetailPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => {
-              const destination = task?.status === "backlog" ? "/backlog" : "/";
+              const destination =
+                task?.status === TASK_STATUS.BACKLOG
+                  ? `/${TASK_STATUS.BACKLOG}`
+                  : "/";
               router.push(destination);
             }}
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
@@ -168,13 +174,13 @@ export default function TaskDetailPage() {
             </label>
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value as Task["status"])}
+              onChange={(e) => setStatus(e.target.value as TaskStatus)}
               className="w-full border p-2 rounded text-gray-700"
             >
-              <option value="backlog">Backlog</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="in-progress">In Progress</option>
-              <option value="done">Done</option>
+              <option value={TASK_STATUS.BACKLOG}>Backlog</option>
+              <option value={TASK_STATUS.SCHEDULED}>Scheduled</option>
+              <option value={TASK_STATUS.IN_PROGRESS}>In Progress</option>
+              <option value={TASK_STATUS.DONE}>Done</option>
             </select>
           </div>
 
