@@ -6,7 +6,7 @@ export const sampleTasks: Task[] = [
     title: "Design Homepage Mockup",
     description:
       "Create initial wireframes and high-fidelity mockups for the new landing page.",
-    status: "to-do",
+    status: "scheduled",
     assignee: "Alice Monroe",
     tags: ["design", "ui"],
     createdAt: new Date().toISOString(),
@@ -16,7 +16,7 @@ export const sampleTasks: Task[] = [
     title: "Implement Authentication",
     description:
       "Set up JWT-based login and registration endpoints with proper validation.",
-    status: "to-do",
+    status: "scheduled",
     assignee: "Brian Chen",
     tags: ["backend", "security"],
     createdAt: new Date().toISOString(),
@@ -26,7 +26,7 @@ export const sampleTasks: Task[] = [
     title: "Integrate Payment Gateway",
     description:
       "Connect Stripe API and test payment flows for subscription plans.",
-    status: "to-do",
+    status: "scheduled",
     assignee: "Carla Reyes",
     tags: ["backend", "payment"],
     createdAt: new Date().toISOString(),
@@ -36,7 +36,7 @@ export const sampleTasks: Task[] = [
     title: "Write Blog Post: React Tips",
     description:
       "Draft an article covering advanced React hooks and performance optimizations.",
-    status: "to-do",
+    status: "scheduled",
     assignee: "David Kim",
     tags: ["content", "react"],
     createdAt: new Date().toISOString(),
@@ -104,7 +104,7 @@ export const sampleTasks: Task[] = [
     title: "Prepare Investor Presentation",
     description:
       "Create slides and visuals for upcoming investor pitch meeting.",
-    status: "to-do",
+    status: "scheduled",
     assignee: "Kevin Patel",
     tags: ["presentation", "business"],
     createdAt: new Date().toISOString(),

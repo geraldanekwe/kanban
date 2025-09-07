@@ -8,7 +8,7 @@ export const mockTasks: Task[] = [
     id: "1",
     title: "Task 1",
     description: "Desc 1",
-    status: "to-do" as TaskStatus,
+    status: "scheduled" as TaskStatus,
     assignee: "Alice",
     tags: [],
     createdAt: "2025-01-01T00:00:00Z",

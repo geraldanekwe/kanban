@@ -198,7 +198,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 className="border p-2 rounded placeholder-gray-500 text-black"
               >
                 <option value="backlog">Backlog</option>
-                <option value="to-do">To-Do</option>
+                <option value="scheduled">Scheduled</option>
               </select>
 
               <div className="flex flex-wrap gap-2">

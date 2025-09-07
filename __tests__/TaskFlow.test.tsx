@@ -132,8 +132,8 @@ describe("TaskFlow Tests", () => {
       reorderTasks: reorderTasksMock,
     });
 
-    reorderTasksMock("to-do", 0, 1);
-    expect(reorderTasksMock).toHaveBeenCalledWith("to-do", 0, 1);
+    reorderTasksMock("scheduled", 0, 1);
+    expect(reorderTasksMock).toHaveBeenCalledWith("scheduled", 0, 1);
   });
 
   it("calls setFilters correctly", () => {

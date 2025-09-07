@@ -45,15 +45,15 @@ export default function HomePage() {
     return Array.from(tagsSet);
   }, [tasks]);
 
-  const { toDo, inProgress, done } = useMemo(() => {
+  const { scheduled, inProgress, done } = useMemo(() => {
     return tasks.reduce(
       (acc, task) => {
-        if (task.status === "to-do") acc.toDo.push(task);
+        if (task.status === "scheduled") acc.scheduled.push(task);
         else if (task.status === "in-progress") acc.inProgress.push(task);
         else if (task.status === "done") acc.done.push(task);
         return acc;
       },
-      { toDo: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
+      { scheduled: [] as Task[], inProgress: [] as Task[], done: [] as Task[] }
     );
   }, [tasks]);
 
@@ -108,8 +108,8 @@ export default function HomePage() {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-col md:flex-row gap-6">
           <BoardColumn
-            status="to-do"
-            tasks={toDo}
+            status="scheduled"
+            tasks={scheduled}
             onOpenModal={openEditModal}
           />
           <BoardColumn
