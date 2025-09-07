@@ -111,7 +111,7 @@ export function useTasks(route: string = "default") {
         const displayStatus = newStatus
           .split("-")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join("");
+          .join(" ");
 
         addToast(`Task moved to "${displayStatus}"!`, "success");
       } catch (error) {
