@@ -126,6 +126,11 @@ export function useTasks(route: string = "default") {
     const lowerText = filters.text.toLowerCase();
     const lowerAssignee = filters.assignee.toLowerCase();
     const lowerTag = filters.tag.toLowerCase();
+    // NOTE: Applies all three current filters:
+    //       - Text search (matches title, description, assignee, or tags)
+    //       - Assignee selection
+    //       - Tag selection
+    //       If multiple filters are applied, only tasks matching **all** filters are returned.
 
     return tasks.filter((t) => {
       const matchesText =
