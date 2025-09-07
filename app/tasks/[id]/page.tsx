@@ -40,6 +40,17 @@ export default function TaskDetailPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [createdAtStr, setCreatedAtStr] = useState("");
 
+  const hasChanges = useMemo(() => {
+    if (!task) return false;
+    return (
+      title !== task.title ||
+      description !== task.description ||
+      status !== task.status ||
+      assignee !== task.assignee ||
+      tags.join(",") !== task.tags.join(",")
+    );
+  }, [title, description, status, assignee, tags, task]);
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -68,32 +79,24 @@ export default function TaskDetailPage() {
     );
   }
 
-  const hasChanges = useMemo(() => {
-    if (!task) return false;
-    return (
-      title !== task.title ||
-      description !== task.description ||
-      status !== task.status ||
-      assignee !== task.assignee ||
-      tags.join(",") !== task.tags.join(",")
-    );
-  }, [title, description, status, assignee, tags, task]);
-
   const handleSave = () => {
     updateTask({
-      ...task,
+      ...task!,
       title,
       description,
       status,
       assignee,
       tags,
     });
-    router.push("/backlog");
+
+    const destination = task?.status === "backlog" ? "/backlog" : "/";
+    router.push(destination);
   };
 
   const handleDelete = () => {
-    deleteTask(task.id);
-    router.push("/backlog");
+    deleteTask(task!.id);
+    const destination = task?.status === "backlog" ? "/backlog" : "/";
+    router.push(destination);
   };
 
   const toggleTag = (tag: string) => {
@@ -112,7 +115,10 @@ export default function TaskDetailPage() {
         <h1 className="text-3xl font-bold text-black">Task Details</h1>
         <div className="flex gap-2 flex-wrap">
           <button
-            onClick={() => router.push("/backlog")}
+            onClick={() => {
+              const destination = task?.status === "backlog" ? "/backlog" : "/";
+              router.push(destination);
+            }}
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
           >
             Cancel
