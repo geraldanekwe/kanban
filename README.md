@@ -108,7 +108,6 @@ UI Updates ←---- Task Operations ←---- Data Loading
 
 **Would Improve With More Time:**
 
-- Ensure filter options for assignees and tags are always populated correctly
 - Add Priority/Due Date on Tasks along with filtering for those fields
 - Add error boundaries
 - Bulk operations

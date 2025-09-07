@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Task } from "@/types/task";
 
 interface FiltersProps {
-  tasks: Task[];
+  allAssignees: string[];
+  allTags: string[];
   value: {
     text: string;
     assignee: string;
@@ -13,19 +13,15 @@ interface FiltersProps {
   onChange: (filters: { text: string; assignee: string; tag: string }) => void;
 }
 
-export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
+export const Filters: React.FC<FiltersProps> = ({
+  allAssignees,
+  allTags,
+  value,
+  onChange,
+}) => {
   const [text, setText] = useState(value.text);
   const [assignee, setAssignee] = useState(value.assignee);
   const [tag, setTag] = useState(value.tag);
-
-  const assignees = useMemo(
-    () => Array.from(new Set(tasks.map((t) => t.assignee))),
-    [tasks]
-  );
-  const tags = useMemo(
-    () => Array.from(new Set(tasks.flatMap((t) => t.tags))),
-    [tasks]
-  );
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -74,7 +70,7 @@ export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
               focus:ring-blue-500 focus:border-transparent transition-all duration-200 truncate"
           >
             <option value="">All Assignees</option>
-            {assignees.map((a) => (
+            {allAssignees.map((a) => (
               <option key={a} value={a}>
                 {a}
               </option>
@@ -89,7 +85,7 @@ export const Filters: React.FC<FiltersProps> = ({ tasks, value, onChange }) => {
               focus:ring-blue-500 focus:border-transparent transition-all duration-200 truncate"
           >
             <option value="">All Tags</option>
-            {tags.map((t) => (
+            {allTags.map((t) => (
               <option key={t} value={t}>
                 {t}
               </option>

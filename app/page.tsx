@@ -10,6 +10,7 @@ import { useTaskActions } from "@/hooks/useTaskActions";
 export default function HomePage() {
   const {
     tasks,
+    rawTasks,
     moveTask,
     reorderTasks,
     updateTask,
@@ -24,13 +25,13 @@ export default function HomePage() {
 
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
-    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
+    rawTasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
     return Array.from(tagsSet);
-  }, [tasks]);
+  }, [rawTasks]);
 
   const allAssignees = useMemo(
-    () => Array.from(new Set(tasks.map((t) => t.assignee))),
-    [tasks]
+    () => Array.from(new Set(rawTasks.map((t) => t.assignee))),
+    [rawTasks]
   );
 
   const { openAddModal, openEditModal, modalProps } = useTaskActions({
@@ -56,7 +57,12 @@ export default function HomePage() {
         />
 
         <div className="mb-8">
-          <Filters tasks={tasks} value={filters} onChange={setFilters} />
+          <Filters
+            allAssignees={allAssignees}
+            allTags={allTags}
+            value={filters}
+            onChange={setFilters}
+          />
         </div>
 
         <KanbanBoard

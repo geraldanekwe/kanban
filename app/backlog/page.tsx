@@ -15,6 +15,7 @@ import { CheckCircleIcon } from "@heroicons/react/24/outline";
 export default function BacklogPage() {
   const {
     tasks,
+    rawTasks,
     addTask,
     updateTask,
     deleteTask,
@@ -46,11 +47,16 @@ export default function BacklogPage() {
     reorderTasks(TASK_STATUS.BACKLOG, source.index, destination.index);
   };
 
+  const allAssignees = useMemo(
+    () => Array.from(new Set(rawTasks.map((t) => t.assignee))),
+    [rawTasks]
+  );
+
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
-    tasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
+    rawTasks.forEach((t) => t.tags.forEach((tag) => tagsSet.add(tag)));
     return Array.from(tagsSet);
-  }, [tasks]);
+  }, [rawTasks]);
 
   const backlogTasks = tasks.filter(
     (task) => task.status === TASK_STATUS.BACKLOG
@@ -68,7 +74,8 @@ export default function BacklogPage() {
       />
 
       <Filters
-        tasks={tasks}
+        allAssignees={allAssignees}
+        allTags={allTags}
         value={filters}
         onChange={(newFilters: TaskFilters) => setFilters(newFilters)}
       />
@@ -127,6 +134,7 @@ export default function BacklogPage() {
           onUpdateTask={updateTask}
           onDeleteTask={(task: Task) => deleteTask(task.id)}
           selectedTask={selectedTask}
+          allAssignees={allAssignees}
           allTags={allTags}
           mode={modalMode}
         />

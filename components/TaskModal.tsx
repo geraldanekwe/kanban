@@ -14,6 +14,7 @@ interface TaskModalProps {
   selectedTask?: Task | null;
   mode: "add" | "edit" | "delete";
   allTags: string[];
+  allAssignees: string[];
 }
 
 const TaskModalComponent: React.FC<TaskModalProps> = ({
@@ -25,6 +26,7 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
   selectedTask,
   mode,
   allTags,
+  allAssignees,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -185,7 +187,6 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
             </h2>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Title */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Task Title
@@ -224,17 +225,21 @@ const TaskModalComponent: React.FC<TaskModalProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Assignee
                 </label>
-                <input
-                  type="text"
-                  placeholder="Assignee"
+                <select
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl
                   placeholder-gray-500 text-gray-900 bg-white
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                   transition-all duration-200"
-                  required
-                />
+                >
+                  <option value="">Select Assignee</option>
+                  {allAssignees.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

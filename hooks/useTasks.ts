@@ -141,6 +141,7 @@ export function useTasks(route: string = "default") {
 
   return {
     tasks: filteredTasks,
+    rawTasks: tasks,
     addTask,
     updateTask,
     deleteTask,
