@@ -5,7 +5,7 @@ import { useTasks } from "@/hooks/useTasks";
 import { useParams, useRouter } from "next/navigation";
 import { TaskModal } from "@/components/TaskModal";
 import { useTaskActions } from "@/hooks/useTaskActions";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { TASK_STATUS, TaskStatus } from "@/constants/taskStatus";
 
 export default function TaskDetailPage() {
@@ -125,19 +125,7 @@ export default function TaskDetailPage() {
             onClick={handleCancel}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <ArrowLeftIcon className="w-4 h-4" />
             Back to{" "}
             {task?.status === TASK_STATUS.BACKLOG ? "Backlog" : "Kanban Board"}
           </button>
