@@ -53,7 +53,7 @@ export default function BacklogPage() {
   };
 
   const allAssignees = useMemo(
-    () => Array.from(new Set(rawTasks.map((t) => t.assignee))),
+    () => [...new Set(rawTasks.map((t) => t.assignee))],
     [rawTasks]
   );
 
